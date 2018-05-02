@@ -23,7 +23,6 @@ services:
 # repository.
 before_install:
   - git clone https://github.com/ramrod-project/integration-stack
-  - git checkout dev
 
 # Second step, install required dependencies.
 install:
@@ -31,13 +30,14 @@ install:
   - docker pull ramrodpcp/database-brain
   - docker pull ramrodpcp/backend-interpreter
 
-# Third step, set up environment before running the stack.
+# Third step, set up environment and run the stack.
 before_script:
   - export STAGE=PROD
   - export LOGLEVEL=WARN
   - docker network create --driver=overlay --attachable pcp
   - docker swarm init
+  - docker stack deploy -c docker/docker-compose.yml test-stack
 
-# Fourth step, deploy the stack to the swarm.
+# Fourth step, test away!
 script:
-  - docker stack deploy -c docker/docker-compose.yml <stack_name>
+  - echo "Put your tests here..."
