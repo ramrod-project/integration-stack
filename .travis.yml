@@ -23,7 +23,7 @@ services:
 # repository.
 before_install:
   - git clone https://github.com/ramrod-project/integration-stack
-  - git branch dev
+  - git checkout dev
 
 # Second step, install required dependencies.
 install:
