@@ -1,0 +1,43 @@
+# We will need sudo to run docker commands
+sudo: required
+
+# In case we need python for testing at come
+# point.
+language: python
+
+# Working with version 3.6
+python:
+  - "3.6"
+
+# We require docker
+services:
+  - docker
+
+# The following are the pipeline stages. They
+# are executed in order inside of a VM in a bash
+# shell, (thus they use bash syntax).
+# 
+# This step runs before the install step,
+# and is the first step in this case. Here we
+# pull down the requisite code from the
+# repository.
+before_install:
+  - git clone https://github.com/ramrod-project/integration-stack
+  - git branch dev
+
+# Second step, install required dependencies.
+install:
+  - docker pull ramrodpcp/frontend-ui
+  - docker pull ramrodpcp/database-brain
+  - docker pull ramrodpcp/backend-interpreter
+
+# Third step, set up environment before running the stack.
+before_script:
+  - export STAGE=PROD
+  - export LOGLEVEL=WARN
+  - docker network create --driver=overlay --attachable pcp
+  - docker swarm init
+
+# Fourth step, deploy the stack to the swarm.
+script:
+  - docker stack deploy -c docker/docker-compose.yml <stack_name>
