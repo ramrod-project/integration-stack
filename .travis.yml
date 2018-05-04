@@ -37,7 +37,15 @@ before_script:
   - docker swarm init
   - docker network create --driver=overlay --attachable pcp
   - docker stack deploy -c docker/docker-compose.yml test-stack
+  - sleep 3
+  - docker stack ps test-stack
 
 # Fourth step, test away!
 script:
   - echo "Put your tests here..."
+
+after_success:
+  - docker stack rm test-stack
+
+notifications:
+  slack: ramrod-project:GDF82rRYDg3KSekrT3GA24qO
