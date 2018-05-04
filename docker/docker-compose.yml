@@ -22,7 +22,7 @@ services:
     networks:
       - pcp
     ports:
-      - 80:8080
+      - 8080:8080
     environment:
       - STAGE=${STAGE}
   # Config information for the RethinkDB container service
