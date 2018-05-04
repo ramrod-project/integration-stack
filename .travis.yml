@@ -34,8 +34,8 @@ install:
 before_script:
   - export STAGE=PROD
   - export LOGLEVEL=WARN
-  - docker network create --driver=overlay --attachable pcp
   - docker swarm init
+  - docker network create --driver=overlay --attachable pcp
   - docker stack deploy -c docker/docker-compose.yml test-stack
 
 # Fourth step, test away!
