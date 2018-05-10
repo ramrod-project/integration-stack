@@ -7,19 +7,7 @@ docker swarm init
 docker network create --driver=overlay --attachable pcp
 ```
 
-Select log level:
+Deploy:
 ```
-export LOGLEVEL=<DEBUG,INFO,WARN,ERROR,CRITICAL>
-```
-
-Dev:
-```
-export STAGE=DEV
-docker stack deploy -c docker/docker-compose.yml <stack_name>
-```
-
-Prod:
-```
-export STAGE=PROD
-docker stack deploy -c docker/docker-compose.yml <stack_name>
+LOGLEVEL=<DEBUG,INFO,WARN,ERROR,CRITICAL> docker stack deploy -c docker/docker-compose.yml <stack_name>
 ```
