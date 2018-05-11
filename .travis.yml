@@ -21,6 +21,7 @@ services:
 # and is the first step in this case. Here we
 # pull down the requisite code from the
 # repository.
+# 
 before_install:
   - git clone https://github.com/ramrod-project/integration-stack
 
