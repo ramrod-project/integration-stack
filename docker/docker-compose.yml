@@ -52,6 +52,7 @@ services:
     environment:
       - STAGE=PROD
       - LOGLEVEL=${LOGLEVEL}
+      - TRAVIS_BRANCH=${TAG}
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
 
