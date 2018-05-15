@@ -4,7 +4,8 @@
 # in a docker stack. Loads the provided images.
 
 if [ $# == 0 ]; then
-    echo "Please provide at least one tar.gz image file to load!"
+    echo "Please provide image files to load!"
+    echo "Usage: setup.sh <image_file_1> <image_file_2> ..."
     exit 1
 fi
 

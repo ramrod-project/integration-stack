@@ -9,6 +9,7 @@ BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
 
 if ! [ $# == 4 ]; then
     echo "Please supply --tag and --loglevel arguments"
+    echo "Usage: deploy.sh --tag <latest|dev|qa> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>"
     exit 1
 fi
 
