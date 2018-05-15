@@ -30,6 +30,7 @@ install:
   - docker pull ramrodpcp/frontend-ui:$TRAVIS_BRANCH
   - docker pull ramrodpcp/database-brain:$TRAVIS_BRANCH
   - docker pull ramrodpcp/backend-interpreter:$TRAVIS_BRANCH
+  - docker pull ramrodpcp/interpreter-plugin:$TRAVIS_BRANCH
 
 # Third step, set up environment and run the stack.
 before_script:
