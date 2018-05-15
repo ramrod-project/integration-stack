@@ -1,4 +1,4 @@
-#!/bin.bash
+#!/bin/bash
 
 # This script pulls the latest versions of the ramrodpcp docker
 # images based on the tag provided by user input. It then exports
@@ -32,5 +32,6 @@ mkdir image_exports
 
 for img in "backend-interpreter:${selection}" "database-brain:${selection}" "frontend-ui:${selection}" "interpreter-plugin:${selection}"; do
     docker pull ramrodpcp/$img
-    docker save ramrodpcp/$img | gzip -c > ./image_exports/ramrodpcp-$img.tar.gz
+    imagesave=$( echo $img | sed 's/:/-/g' )
+    docker save ramrodpcp/$img | gzip -c > ./image_exports/ramrodpcp-$imagesave.tar.gz
 done
