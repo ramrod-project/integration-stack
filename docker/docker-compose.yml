@@ -21,6 +21,8 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - "database"
     networks:
       pcp:
         aliases:
@@ -45,6 +47,8 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - "database"
     networks:
       pcp:
         aliases:
