@@ -18,12 +18,15 @@ services:
   # Config information for the frontend container service
   frontend:
     image: ramrodpcp/frontend-ui:${TAG}
-    container_name: frontend
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - "database"
     networks:
-      - pcp
+      pcp:
+        aliases:
+          - frontend
     ports:
       - 8080:8080
     environment:
@@ -31,21 +34,25 @@ services:
   # Config information for the RethinkDB container service
   database:
     image: ramrodpcp/database-brain:${TAG}
-    container_name: rethinkdb
     deploy:
       restart_policy:
         condition: on-failure
     networks:
-      - pcp
+      pcp:
+        aliases:
+          - rethinkdb
   # Config information for the backend container service
   backend:
     image: ramrodpcp/backend-interpreter:${TAG}
-    container_name: interpreter
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - "database"
     networks:
-      - pcp
+      pcp:
+        aliases:
+          - controller
     # This container requires a couple environment variables
     # to be passed in. These are taken from the environment
     # in which the stack is run.
