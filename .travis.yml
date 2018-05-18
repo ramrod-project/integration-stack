@@ -21,24 +21,27 @@ services:
 # and is the first step in this case. Here we
 # pull down the requisite code from the
 # repository.
+# 
 before_install:
   - git clone https://github.com/ramrod-project/integration-stack
 
 # Second step, install required dependencies.
 install:
-  - docker pull ramrodpcp/frontend-ui
-  - docker pull ramrodpcp/database-brain
-  - docker pull ramrodpcp/backend-interpreter
+  - docker pull ramrodpcp/frontend-ui:$TRAVIS_BRANCH
+  - docker pull ramrodpcp/database-brain:$TRAVIS_BRANCH
+  - docker pull ramrodpcp/backend-interpreter:$TRAVIS_BRANCH
+  - docker pull ramrodpcp/interpreter-plugin:$TRAVIS_BRANCH
 
 # Third step, set up environment and run the stack.
 before_script:
-  - export STAGE=PROD
-  - export LOGLEVEL=WARN
+  - export LOGLEVEL=DEBUG
+  - export TAG=$TRAVIS_BRANCH
   - docker swarm init
   - docker network create --driver=overlay --attachable pcp
   - docker stack deploy -c docker/docker-compose.yml test-stack
-  - sleep 3
+  - sleep 6
   - docker stack ps test-stack
+  - docker ps -a
 
 # Fourth step, test away!
 script:

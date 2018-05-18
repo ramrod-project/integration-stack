@@ -2,6 +2,9 @@
 # This file contains all of the configurations for
 # starting up and running the necessary containers
 # as services in a docker stack.
+# TODO:
+# - add $TAG environment variable to specify which version (dev,qa,latest)
+# - rework cronjob to pull from dev
 
 version: "3"
 
@@ -14,41 +17,49 @@ version: "3"
 services:
   # Config information for the frontend container service
   frontend:
-    image: ramrodpcp/frontend-ui
-    container_name: frontend
+    image: ramrodpcp/frontend-ui:${TAG}
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - "database"
     networks:
-      - pcp
+      pcp:
+        aliases:
+          - frontend
     ports:
       - 8080:8080
     environment:
-      - STAGE=${STAGE}
+      - STAGE=PROD
   # Config information for the RethinkDB container service
   database:
-    image: ramrodpcp/database-brain
-    container_name: rethinkdb
+    image: ramrodpcp/database-brain:${TAG}
     deploy:
       restart_policy:
         condition: on-failure
     networks:
-      - pcp
+      pcp:
+        aliases:
+          - rethinkdb
   # Config information for the backend container service
   backend:
-    image: ramrodpcp/backend-interpreter
-    container_name: interpreter
+    image: ramrodpcp/backend-interpreter:${TAG}
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - "database"
     networks:
-      - pcp
+      pcp:
+        aliases:
+          - controller
     # This container requires a couple environment variables
     # to be passed in. These are taken from the environment
     # in which the stack is run.
     environment:
-      - STAGE=${STAGE}
+      - STAGE=PROD
       - LOGLEVEL=${LOGLEVEL}
+      - TRAVIS_BRANCH=${TAG}
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
 
