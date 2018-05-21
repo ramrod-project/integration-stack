@@ -108,7 +108,7 @@ $ ./setup.sh image_name_1.tar.gz image_name_2.tar.gz
 1. Run the deployment script
 
 ```
-$ ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WANR|ERROR|CRITICAL>
+$ sudo ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WANR|ERROR|CRITICAL>
 ```
 
 2. Press `<CTRL-C>` to tear down the stack.
