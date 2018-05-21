@@ -3,6 +3,7 @@
 # This script deploys the docker stack.
 # TODO:
 # - add host entry for frontend
+# - pull images before deploy
 
 TAG=""
 LOGLEVEL=""
@@ -23,7 +24,9 @@ BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
 
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 sudo cp /etc/hosts /etc/hosts.bak
-sudo echo "${DOCKER_IP}     frontend" >> /etc/hosts
+sudo bash -c 'echo "${DOCKER_IP}     frontend" >> /etc/hosts'
+
+echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
 if ! [ $# == 4 ]; then
     echo "Please supply --tag and --loglevel arguments"
@@ -86,6 +89,9 @@ docker network create --driver=overlay --attachable pcp
 
 TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test
 
+echo "You can reach the frontend at 'http://frontend:8080'."
+echo "If you need to access from another machine or VM host, \
+be sure to add this machine's IP to the hostfile as 'frontend'"
 echo "Running stack, press <CRTL-C> to stop..."
 while true; do
     sleep 1
