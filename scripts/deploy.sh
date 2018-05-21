@@ -1,11 +1,29 @@
 #!/bin/bash
 
 # This script deploys the docker stack.
+# TODO:
+# - add host entry for frontend
 
 TAG=""
 LOGLEVEL=""
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
+
+# Get IPs
+# IFCONFIG_OUTPUT=$(ifconfig -a | grep -v "lo\|docker" | grep -A 1 "Ethernet" | awk 'NR%3==2 {print $2}' | sed 's/addr://g')
+
+# function readarray() {
+#   local i=0
+#   unset -v "$1"
+#   while IFS= read -r "$1[i++]"; do :; done
+#   eval "[[ \${$1[--i]} ]]" || unset "$1[i]"
+# }
+
+# readarray HOST_IPS < <(echo $IFCONFIG_OUTPUT)
+
+DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
+sudo cp /etc/hosts /etc/hosts.bak
+sudo echo "${DOCKER_IP}     frontend" >> /etc/hosts
 
 if ! [ $# == 4 ]; then
     echo "Please supply --tag and --loglevel arguments"
@@ -56,6 +74,7 @@ done
 crtl_c() {
     docker stack rm pcp-test
     docker network prune -f
+    sudo cp /etc/hosts.bak /etc/hosts
     exit 0
 }
 
