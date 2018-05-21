@@ -76,7 +76,7 @@ done
 
 declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
 echo "Checking internet connection..."
-if ! [[] $(ping -c 3 8.8.8.8) ]]; then
+if ! [[ $(ping -c 3 8.8.8.8) ]]; then
     echo "No internet connection! checking for local images..."
     for image in "${images[@]}"; do
         docker image inspect $image:$TAG >> /dev/null
