@@ -112,12 +112,13 @@ crtl_c() {
 trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
-docker swarm init 2>/dev/null
-docker network create --driver=overlay --attachable pcp 2>/dev/null
+docker swarm init >>/dev/null
+docker network create --driver=overlay --attachable pcp >>/dev/null
 
-TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test
+echo "Deploying stack..."
+TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
 
-echo "You can reach the frontend at 'http://frontend:8080'."
+echo "You can reach the frontend from this machine at 'http://frontend:8080'."
 echo "If you need to access from another machine or VM host, \
 be sure to add this machine's IP to the hostfile as 'frontend'"
 echo "Running stack, press <CRTL-C> to stop..."
