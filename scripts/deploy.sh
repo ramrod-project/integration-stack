@@ -75,8 +75,14 @@ for arg in "${ARGS[@]}"; do
 done
 
 crtl_c() {
+    echo "Tearing down stack..."
     docker stack rm pcp-test
+    echo "Removing leftover containers..."
+    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker stop 2>/dev/null && \
+    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker rm 2>/dev/null
+    echo "Pruning networks..."
     docker network prune -f
+    echo "Restoring hosts file..."
     sudo cp /etc/hosts.bak /etc/hosts
     exit 0
 }
@@ -85,7 +91,7 @@ trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
 docker swarm init 2>/dev/null
-docker network create --driver=overlay --attachable pcp
+docker network create --driver=overlay --attachable pcp 2>/dev/null
 
 TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test
 
