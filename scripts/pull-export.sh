@@ -31,7 +31,9 @@ done
 mkdir image_exports
 
 for img in "backend-interpreter:${selection}" "database-brain:${selection}" "frontend-ui:${selection}" "interpreter-plugin:${selection}"; do
-    docker pull ramrodpcp/$img
+    echo "Pulling ramrodpcp/${img}..."
+    docker pull ramrodpcp/$img >> /dev/null
     imagesave=$( echo $img | sed 's/:/-/g' )
+    echo "Saving image to ./image_exports/ramrodpcp-${imagesave}.tar.gz"
     docker save ramrodpcp/$img | gzip -c > ./image_exports/ramrodpcp-$imagesave.tar.gz
 done

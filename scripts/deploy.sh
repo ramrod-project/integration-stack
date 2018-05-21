@@ -100,8 +100,8 @@ crtl_c() {
     echo "Tearing down stack..."
     docker stack rm pcp-test >> /dev/null
     echo "Removing leftover containers..."
-    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker stop >>/dev/null && \
-    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker rm >>/dev/null
+    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null' && \
+    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then rm stop {} 2>&1; fi >>/dev/null'
     echo "Pruning networks..."
     docker network prune -f >> /dev/null
     echo "Restoring hosts file..."
