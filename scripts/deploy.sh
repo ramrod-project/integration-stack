@@ -23,10 +23,6 @@ BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
 # readarray HOST_IPS < <(echo $IFCONFIG_OUTPUT)
 
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
-sudo cp /etc/hosts /etc/hosts.bak
-sudo bash -c 'echo "${DOCKER_IP}     frontend" >> /etc/hosts'
-
-echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
 if ! [ $# == 4 ]; then
     echo "Please supply --tag and --loglevel arguments"
@@ -73,6 +69,10 @@ for arg in "${ARGS[@]}"; do
         *) echo "argument ${arg} not recognized!";;
     esac
 done
+
+cp /etc/hosts /etc/hosts.bak
+bash -c 'echo "${DOCKER_IP}     frontend" >> /etc/hosts'
+echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
 declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
 echo "Checking internet connection..."
