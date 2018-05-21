@@ -98,12 +98,12 @@ fi
 
 crtl_c() {
     echo "Tearing down stack..."
-    docker stack rm pcp-test
+    docker stack rm pcp-test >> /dev/null
     echo "Removing leftover containers..."
-    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker stop 2>/dev/null && \
-    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker rm 2>/dev/null
+    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker stop >>/dev/null && \
+    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs docker rm >>/dev/null
     echo "Pruning networks..."
-    docker network prune -f
+    docker network prune -f >> /dev/null
     echo "Restoring hosts file..."
     sudo cp /etc/hosts.bak /etc/hosts
     exit 0
