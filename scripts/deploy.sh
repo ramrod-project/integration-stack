@@ -74,6 +74,28 @@ for arg in "${ARGS[@]}"; do
     esac
 done
 
+declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
+echo "Checking internet connection..."
+if ! [[] $(ping -c 3 8.8.8.8) ]]; then
+    echo "No internet connection! checking for local images..."
+    for image in "${images[@]}"; do
+        docker image inspect $image:$TAG >> /dev/null
+        if ! [[ $? == 0 ]]; then
+            echo "Unable to find image ${image}:${TAG} locally! Exiting..."
+            exit 1
+        fi
+    done
+else
+    for image in "${images[@]}"; do
+        echo "Pulling ${image}:${TAG}..."
+        docker pull $image:$TAG >> /dev/null
+        if ! [ $? == 0 ]; then
+            echo "Unable to pull image ${image}:${TAG}! Exiting..."
+            exit 1
+        fi
+    done
+fi
+
 crtl_c() {
     echo "Tearing down stack..."
     docker stack rm pcp-test
