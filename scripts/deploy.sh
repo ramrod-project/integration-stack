@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# This script deploys the docker stack.
+# This script deploys the docker stack. Only works on Ubuntu 16.04 at the moment.
 # TODO:
-# - add host entry for frontend
-# - pull images before deploy
+# - change hosts environment variable
 
 TAG=""
 LOGLEVEL=""
@@ -71,12 +70,12 @@ for arg in "${ARGS[@]}"; do
 done
 
 cp /etc/hosts /etc/hosts.bak
-bash -c 'echo "${DOCKER_IP}     frontend" >> /etc/hosts'
+bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
 declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
 echo "Checking internet connection..."
-if ! [[ $(ping -c 3 8.8.8.8) ]]; then
+if ! [[ $(ping -c 3 9.9.9.9) ]]; then
     echo "No internet connection! checking for local images..."
     for image in "${images[@]}"; do
         docker image inspect $image:$TAG >> /dev/null
@@ -98,7 +97,7 @@ fi
 
 crtl_c() {
     echo "Tearing down stack..."
-    docker stack rm pcp-test >> /dev/null
+    docker stack rm pcp-test 2>&1 >>/dev/null
     echo "Removing leftover containers..."
     docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null' && \
     docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then rm stop {} 2>&1; fi >>/dev/null'
@@ -114,6 +113,9 @@ trap ctrl_c SIGTSTP
 
 docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
+
+echo "Opening port 5000 on firewall..."
+ufw allow 5000
 
 echo "Deploying stack..."
 TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
