@@ -100,7 +100,7 @@ crtl_c() {
     docker stack rm pcp-test 2>&1 >>/dev/null
     echo "Removing leftover containers..."
     docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null'
-    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
+    docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
     echo "Pruning networks..."
     docker network prune -f >> /dev/null
     echo "Restoring hosts file..."
@@ -114,8 +114,9 @@ trap ctrl_c SIGTSTP
 docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
 
-echo "Opening port 5000 on firewall..."
+echo "Opening ports 8080/5000 on firewall..."
 ufw allow 5000
+ufw allow 8080
 
 echo "Deploying stack..."
 TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
