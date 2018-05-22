@@ -69,7 +69,61 @@ usermod -aG docker <user>
 
 So you don't have to `sudo` every docker command. Replace \<user\> with your username.
 
-## Stack deployment
+## Exporting images for offline use
+
+1. Run the export script and select the appropriate tag from the prompt
+
+```
+$ ./pull-export.sh
+1) dev
+2) qa
+3) latest
+4) exit
+```
+
+2. Images are saved to the images_export folder in the current working directory.
+
+```
+$ ls -la
+drwxrwxr-x 2 user user      4096 May 21 12:39 .
+drwxrwxr-x 6 user user      4096 May 21 12:38 ..
+-rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-backend-interpreter-dev.tar.gz
+-rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-database-brain-dev.tar.gz
+-rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-frontend-ui-dev.tar.gz
+-rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-interpreter-plugin-dev.tar.gz
+```
+
+## Load images from files for offline use
+
+1. Load images from .tar.gz
+
+Run the 'setup.sh script, passing the archives in as arguments.'
+
+```
+$ ./setup.sh image_name_1.tar.gz image_name_2.tar.gz
+```
+
+## Stack deployment (Automated)
+
+1. Run the deployment script
+
+```
+$ sudo ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WANR|ERROR|CRITICAL>
+```
+
+2. Press `<CTRL-C>` to tear down the stack.
+
+```
+You can reach the frontend at 'http://frontend:8080'.
+If you need to access from another machine or VM host, be sure to add this machine's IP to the hostfile as 'frontend'
+Running stack, press <CRTL-C> to stop...
+^CTearing down stack...
+Removing leftover containers...
+Pruning networks...
+Restoring hosts file...
+```
+
+## Stack deployment (Manual)
 
 1. Initialize swarm:
 
