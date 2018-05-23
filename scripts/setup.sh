@@ -5,23 +5,19 @@
 
 if [ $# == 0 ]; then
     echo "Please provide image files to load!"
-    echo "Usage: setup.sh <image_file_1> <image_file_2> ..."
+    echo "Usage: setup.sh <image_directory>"
     exit 1
 fi
 
-# Validate arguments
-for img in "$@"; do
-    if ! [ -f $img ]; then
-        echo "File ${img} not found!"
-        exit 1
-    elif ! [[ $( tar -t -f $img ) ]]; then
-        echo "File ${img} is not a valid tar.gz archive!"
-        exit 1
-    fi
-done
+# Get image file names
+images=()
+
+while IFS= read -d $'\0' -r file ; do
+     images=("${images[@]}" "$file")
+done < <(find "$1" -name "*image-*" -print0)
 
 # Load images
-for img in "$@"; do
+for img in "${images[@]}"; do
     echo "Loading ${img}..."
     docker load --input $img
 done
