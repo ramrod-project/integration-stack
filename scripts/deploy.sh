@@ -74,26 +74,12 @@ bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
 declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
-echo "Checking internet connection..."
-if ! [[ $(ping -c 3 9.9.9.9) ]]; then
-    echo "No internet connection! checking for local images..."
-    for image in "${images[@]}"; do
-        docker image inspect $image:$TAG >> /dev/null
-        if ! [[ $? == 0 ]]; then
-            echo "Unable to find image ${image}:${TAG} locally! Exiting..."
-            exit 1
-        fi
-    done
-else
-    for image in "${images[@]}"; do
-        echo "Pulling ${image}:${TAG}..."
-        docker pull $image:$TAG >> /dev/null
-        if ! [ $? == 0 ]; then
-            echo "Unable to pull image ${image}:${TAG}! Exiting..."
-            exit 1
-        fi
-    done
-fi
+for image in "${images[@]}"; do
+    docker image inspect $image:$TAG >> /dev/null
+    if ! [[ $? == 0 ]]; then
+        echo "Unable to find image ${image}:${TAG} locally!"
+    fi
+done
 
 crtl_c() {
     echo "Tearing down stack..."
