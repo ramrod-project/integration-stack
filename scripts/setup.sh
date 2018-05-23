@@ -3,18 +3,25 @@
 # This script sets up the host environment to run the application
 # in a docker stack. Loads the provided images.
 
-if [ $# == 0 ]; then
-    echo "Please provide image files to load!"
-    echo "Usage: setup.sh <image_directory>"
+if [[ $# == 0 ]]; then
+    echo "Please provide directory to export archive!"
+    echo "Usage: setup.sh <archive_directory>"
     exit 1
 fi
+
+if ! [[ -f $1/ramrodpcp-exports.tar.gz ]]; then
+    echo "${1}/ramrodpcp-exports.tar.gz not found!"
+    exit 2
+fi
+
+tar -xzvf $1/ramrodpcp-exports.tar.gz
 
 # Get image file names
 images=()
 
 while IFS= read -d $'\0' -r file ; do
      images=("${images[@]}" "$file")
-done < <(find "$1" -name "*image-*" -print0)
+done < <(find ./exports/ -name "*image-*" -print0)
 
 # Load images
 for img in "${images[@]}"; do
