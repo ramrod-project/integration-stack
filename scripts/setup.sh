@@ -14,7 +14,7 @@ if ! [[ -f $1/ramrodpcp-exports.tar.gz ]]; then
     exit 2
 fi
 
-tar -xzvf $1/ramrodpcp-exports.tar.gz
+tar -xzvf $1/ramrodpcp-exports.tar.gz -C $1
 
 # Get image file names
 images=()
