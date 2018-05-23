@@ -69,7 +69,7 @@ usermod -aG docker <user>
 
 So you don't have to `sudo` every docker command. Replace \<user\> with your username.
 
-## Exporting images for offline use
+## Exporting images/repos for offline use
 
 1. Run the export script and select the appropriate tag from the prompt
 
@@ -81,26 +81,44 @@ $ ./pull-export.sh
 4) exit
 ```
 
-2. Images are saved to the images_export folder in the current working directory.
+2. Latest images are pulled based on provided tag and repos are cloned similarly. 
+
+These are all compressed and stored in an export archive: ramrodpcp-exports.tar.gz.
 
 ```
-$ ls -la
-drwxrwxr-x 2 user user      4096 May 21 12:39 .
-drwxrwxr-x 6 user user      4096 May 21 12:38 ..
--rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-backend-interpreter-dev.tar.gz
--rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-database-brain-dev.tar.gz
--rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-frontend-ui-dev.tar.gz
--rw-rw-r-- 1 user user      4096 May 21 12:39 ramrodpcp-interpreter-plugin-dev.tar.gz
+$ tar -t -f ramrodpcp-exports.tar.gz
+./exports/
+./exports/image-database-brain-124531-05-23-18-CDT.tar.gz
+./exports/repo-clone-database-brain-124659-05-23-18-CDT.tar.gz
+./exports/image-interpreter-plugin-124612-05-23-18-CDT.tar.gz
+./exports/image-backend-interpreter-124526-05-23-18-CDT.tar.gz
+./exports/repo-clone-integration-stack-124702-05-23-18-CDT.tar.gz
+./exports/repo-clone-frontend-ui-124648-05-23-18-CDT.tar.gz
+./exports/repo-clone-backend-interpreter-124657-05-23-18-CDT.tar.gz
+./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz
 ```
 
 ## Load images from files for offline use
 
 1. Load images from .tar.gz
 
-Run the 'setup.sh script, passing the archives in as arguments.'
+Run the 'setup.sh script, passing the directory to the export archive.'
 
 ```
-$ ./setup.sh image_name_1.tar.gz image_name_2.tar.gz
+$ ./setup.sh <export_directory>
+```
+
+This finds and loads the images 
+
+```
+Loading ./exports/image-database-brain-124531-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/database-brain:dev
+Loading ./exports/image-interpreter-plugin-124612-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/interpreter-plugin:dev
+Loading ./exports/image-backend-interpreter-124526-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/backend-interpreter:dev
+Loading ./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/frontend-ui:dev
 ```
 
 ## Stack deployment (Automated)
