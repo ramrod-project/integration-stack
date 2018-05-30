@@ -36,17 +36,17 @@ mkdir repos
 for img in "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin"; do
     echo "Pulling ramrodpcp/${img}:${selection}..."
     docker pull ramrodpcp/$img:$selection >> /dev/null
-    imagesave=$img-$selection
-    echo "Saving image to ./exports/ramrodpcp-${imagesave}.tar.gz"
-    docker save ramrodpcp/$img:$selection | gzip -c > ./exports/ramrodpcp-$imagesave.tar.gz
+    imagesave=$img-$selection_$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
+    echo "Saving image to ./exports/image-${imagesave}.tar.gz"
+    docker save ramrodpcp/$img:$selection | gzip -c > ./exports/image-$imagesave.tar.gz
 done
 
 for repo in "frontend-ui" "backend-interpreter" "database-brain" "integration-stack"; do
     echo "Cloning repository: ${repo} branch: ${selection}"
     git clone -b $selection https://github.com/ramrod-project/$repo ./repos/$repo >> /dev/null
-    reposave=$repo-$selection
-    echo "Saving repo to ./exports/${repo}-${selection}.tar.gz"
-    tar -czvf ./exports/$repo-$selection.tar.gz ./repos/$repo >> /dev/null
+    reposave=$repo-$selection_$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
+    echo "Saving repo to ./exports/repo-clone-${reposave}.tar.gz"
+    tar -czvf ./exports/repo-clone-$reposave.tar.gz ./repos/$repo >> /dev/null
 done
 
 echo "Exporting repos and images to file ramrodpcp-exports.tar.gz..."
