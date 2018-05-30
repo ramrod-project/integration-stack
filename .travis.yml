@@ -13,6 +13,12 @@ python:
 services:
   - docker
 
+branches:
+  only:
+  - master
+  - dev
+  - qa
+
 # The following are the pipeline stages. They
 # are executed in order inside of a VM in a bash
 # shell, (thus they use bash syntax).
@@ -27,15 +33,17 @@ before_install:
 
 # Second step, install required dependencies.
 install:
-  - docker pull ramrodpcp/frontend-ui:$TRAVIS_BRANCH
-  - docker pull ramrodpcp/database-brain:$TRAVIS_BRANCH
-  - docker pull ramrodpcp/backend-interpreter:$TRAVIS_BRANCH
-  - docker pull ramrodpcp/interpreter-plugin:$TRAVIS_BRANCH
+  - if [ "$TRAVIS_BRANCH" == "master" ]; 
+    then export TAG=latest;
+    else export TAG=$TRAVIS_BRANCH; fi
+  - export LOGLEVEL=DEBUG
+  - docker pull ramrodpcp/frontend-ui:$TAG
+  - docker pull ramrodpcp/database-brain:$TAG
+  - docker pull ramrodpcp/backend-interpreter:$TAG
+  - docker pull ramrodpcp/interpreter-plugin:$TAG
 
 # Third step, set up environment and run the stack.
 before_script:
-  - export LOGLEVEL=DEBUG
-  - export TAG=$TRAVIS_BRANCH
   - docker swarm init
   - docker network create --driver=overlay --attachable pcp
   - docker stack deploy -c docker/docker-compose.yml test-stack
@@ -45,10 +53,13 @@ before_script:
 
 # Fourth step, test away!
 script:
-  - echo "Put your tests here..."
+  - docker build -t robot-tester .
+  - docker run -t --rm --network pcp robot-tester
 
+# Cleanup, housekeeping
 after_success:
   - docker stack rm test-stack
+  - docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs docker stop
 
 notifications:
   slack: ramrod-project:GDF82rRYDg3KSekrT3GA24qO
