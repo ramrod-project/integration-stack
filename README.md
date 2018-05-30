@@ -69,7 +69,79 @@ usermod -aG docker <user>
 
 So you don't have to `sudo` every docker command. Replace \<user\> with your username.
 
-## Stack deployment
+## Exporting images/repos for offline use
+
+1. Run the export script and select the appropriate tag from the prompt
+
+```
+$ ./pull-export.sh
+1) dev
+2) qa
+3) latest
+4) exit
+```
+
+2. Latest images are pulled based on provided tag and repos are cloned similarly. 
+
+These are all compressed and stored in an export archive: ramrodpcp-exports.tar.gz.
+
+```
+$ tar -t -f ramrodpcp-exports.tar.gz
+./exports/
+./exports/image-database-brain-124531-05-23-18-CDT.tar.gz
+./exports/repo-clone-database-brain-124659-05-23-18-CDT.tar.gz
+./exports/image-interpreter-plugin-124612-05-23-18-CDT.tar.gz
+./exports/image-backend-interpreter-124526-05-23-18-CDT.tar.gz
+./exports/repo-clone-integration-stack-124702-05-23-18-CDT.tar.gz
+./exports/repo-clone-frontend-ui-124648-05-23-18-CDT.tar.gz
+./exports/repo-clone-backend-interpreter-124657-05-23-18-CDT.tar.gz
+./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz
+```
+
+## Load images from files for offline use
+
+1. Load images from .tar.gz
+
+Run the 'setup.sh script, passing the directory to the export archive.'
+
+```
+$ ./setup.sh <export_directory>
+```
+
+This finds and loads the images 
+
+```
+Loading ./exports/image-database-brain-124531-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/database-brain:dev
+Loading ./exports/image-interpreter-plugin-124612-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/interpreter-plugin:dev
+Loading ./exports/image-backend-interpreter-124526-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/backend-interpreter:dev
+Loading ./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz...
+Loaded image: ramrodpcp/frontend-ui:dev
+```
+
+## Stack deployment (Automated)
+
+1. Run the deployment script
+
+```
+$ sudo ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WANR|ERROR|CRITICAL>
+```
+
+2. Press `<CTRL-C>` to tear down the stack.
+
+```
+You can reach the frontend at 'http://frontend:8080'.
+If you need to access from another machine or VM host, be sure to add this machine's IP to the hostfile as 'frontend'
+Running stack, press <CRTL-C> to stop...
+^CTearing down stack...
+Removing leftover containers...
+Pruning networks...
+Restoring hosts file...
+```
+
+## Stack deployment (Manual)
 
 1. Initialize swarm:
 
