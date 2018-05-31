@@ -1,4 +1,6 @@
 # We will need sudo to run docker commands
+# TODO:
+
 sudo: required
 
 # In case we need python for testing at come
@@ -53,8 +55,7 @@ before_script:
 
 # Fourth step, test away!
 script:
-  - docker build -t robot-tester .
-  - docker run -t --rm --network pcp robot-tester
+  - docker run -t --rm --network pcp -v `pwd`/Robot:/opt/robotframework/tests ramrodpcp/robot-framework-xvfb:$TAG
 
 # Cleanup, housekeeping
 after_success:
