@@ -3,24 +3,12 @@
 # This script deploys the docker stack. Only works on Ubuntu 16.04 at the moment.
 # TODO:
 # - change hosts environment variable
+# - add option for robot in 'qa'
 
 TAG=""
 LOGLEVEL=""
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
-
-# Get IPs
-# IFCONFIG_OUTPUT=$(ifconfig -a | grep -v "lo\|docker" | grep -A 1 "Ethernet" | awk 'NR%3==2 {print $2}' | sed 's/addr://g')
-
-# function readarray() {
-#   local i=0
-#   unset -v "$1"
-#   while IFS= read -r "$1[i++]"; do :; done
-#   eval "[[ \${$1[--i]} ]]" || unset "$1[i]"
-# }
-
-# readarray HOST_IPS < <(echo $IFCONFIG_OUTPUT)
-
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 
 if ! [ $# == 4 ]; then
@@ -73,9 +61,14 @@ cp /etc/hosts /etc/hosts.bak
 bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
-declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
+declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" )
+
+if [[ "$TAG" == "qa" ]]; then
+    images+=( "robot-framework-xvfb" )
+fi
+
 for image in "${images[@]}"; do
-    docker image inspect $image:$TAG >> /dev/null
+    docker image inspect ramrodpcp/$image:$TAG >> /dev/null
     if ! [[ $? == 0 ]]; then
         echo "Unable to find image ${image}:${TAG} locally!"
     fi
