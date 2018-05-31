@@ -4,9 +4,10 @@
 # images based on the tag provided by user input. It then exports
 # them to .tar.gz files.
 # TODO:
+# - add udev deploy option
 
 PS3="Please select a release to download and export: "
-options=("dev" "qa" "latest" "exit")
+options=( "dev" "qa" "latest" "exit" )
 select opt in "${options[@]}"
 do
     case $opt in
@@ -38,18 +39,20 @@ if [[ "$selection" == "qa" ]]; then
     images+=( "robot-framework-xvfb" )
 fi
 
+timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
+
 for img in "${images[@]}"; do
     imagename=ramrodpcp/$img:$selection
-    imagesave=image-$img-$selection_$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
+    imagesave=image-$img-$selection_$timestamp
 
     echo "Pulling ramrodpcp/${img}..."
     docker pull $imagename >> /dev/null
 
     echo "Saving image to ./exports/${imagesave}.tar.gz"
     docker inspect --format='{{index .RepoDigests 0}}' $imagename | sed 's/^[^:]*://g' >> $imagesave.sha
-    docker save $imagename
-    tar -rf $imagename.tar $imagesave.sha
-    gzip $imagename.tar && mv $imagename.tar.gz ./exports
+    docker save $imagename -o $imagesave.tar
+    tar -rf $imagesave.tar $imagesave.sha
+    gzip $imagesave.tar && mv $imagesave.tar.gz ./exports
 done
 
 for repo in "frontend-ui" "backend-interpreter" "database-brain" "integration-stack"; do
@@ -61,6 +64,6 @@ for repo in "frontend-ui" "backend-interpreter" "database-brain" "integration-st
 done
 
 echo "Exporting repos and images to file ramrodpcp-exports.tar.gz..."
-tar -czvf ramrodpcp-exports.tar.gz ./exports
+tar -czvf ramrodpcp-exports-$selection_$timestamp.tar.gz ./exports
 echo "Cleaning up..."
 rm -rf {exports,repos}
