@@ -6,12 +6,10 @@ Library           XvfbRobot
 
 *** Test Cases ***
 Open App
-  [Setup]
-
-  Start Virtual Display  1920  1080
-  Open Browser    http://frontend:8080
-	Page Should Contain    PCP Dashboard
-
+    [Setup]
+    Start Virtual Display 1920 1080
+    Open Browser    frontend:8080    firefox
+    Page Should Contain    PCP Dashboard
 	
 Search Box
     Input Text    searchNameHere    bogus plugin
@@ -22,10 +20,10 @@ Add Job
     Click Button    addjob_button
     Page Should Contain Element    pluginid1
     Page Should Contain Element    updateid1    terminal1
-    Click Button
+    Click Button    addjob_button
     Page Should Contain Element    pluginid2
     Page Should Contain Element    updateid2    terminal2
-    Click Button
+    Click Button    addjob_button
     Page Should Contain Element    pluginid3
     Page Should Contain Element    updateid3    terminal3
 	
