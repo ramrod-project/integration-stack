@@ -4,7 +4,6 @@
 # images based on the tag provided by user input. It then exports
 # them to .tar.gz files.
 # TODO:
-# - clone repos and export them
 
 PS3="Please select a release to download and export: "
 options=("dev" "qa" "latest" "exit")
@@ -33,12 +32,24 @@ done
 mkdir exports
 mkdir repos
 
-for img in "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin"; do
-    echo "Pulling ramrodpcp/${img}:${selection}..."
-    docker pull ramrodpcp/$img:$selection >> /dev/null
-    imagesave=$img-$selection_$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
-    echo "Saving image to ./exports/image-${imagesave}.tar.gz"
-    docker save ramrodpcp/$img:$selection | gzip -c > ./exports/image-$imagesave.tar.gz
+declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" )
+
+if [[ "$selection" == "qa" ]]; then
+    images+=( "robot-framework-xvfb" )
+fi
+
+for img in "${images[@]}"; do
+    imagename=ramrodpcp/$img:$selection
+    imagesave=image-$img-$selection_$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
+
+    echo "Pulling ramrodpcp/${img}..."
+    docker pull $imagename >> /dev/null
+
+    echo "Saving image to ./exports/${imagesave}.tar.gz"
+    docker inspect --format='{{index .RepoDigests 0}}' $imagename | sed 's/^[^:]*://g' >> $imagesave.sha
+    docker save $imagename
+    tar -rf $imagename.tar $imagesave.sha
+    gzip $imagename.tar && mv $imagename.tar.gz ./exports
 done
 
 for repo in "frontend-ui" "backend-interpreter" "database-brain" "integration-stack"; do
