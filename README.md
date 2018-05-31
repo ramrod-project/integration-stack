@@ -126,7 +126,7 @@ Loaded image: ramrodpcp/frontend-ui:dev
 1. Run the deployment script
 
 ```
-$ sudo ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WANR|ERROR|CRITICAL>
+$ sudo ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>
 ```
 
 2. Press `<CTRL-C>` to tear down the stack.
@@ -135,7 +135,15 @@ $ sudo ./deploy.sh --tag <dev|qa|latest> --loglevel <DEBUG|INFO|WANR|ERROR|CRITI
 You can reach the frontend at 'http://frontend:8080'.
 If you need to access from another machine or VM host, be sure to add this machine's IP to the hostfile as 'frontend'
 Running stack, press <CRTL-C> to stop...
-^CTearing down stack...
+ID                  NAME                  IMAGE                               NODE
+   DESIRED STATE       CURRENT STATE           ERROR               PORTS
+qku16axjcq4d        pcp-test_database.1   ramrodpcp/database-brain:dev        blackarch
+   Running             Running 5 seconds ago
+0jx6wp2kwtxe        pcp-test_frontend.1   ramrodpcp/frontend-ui:dev           blackarch
+   Running             Running 7 seconds ago
+mjhhmkx3gt0i        pcp-test_backend.1    ramrodpcp/backend-interpreter:dev   blackarch
+   Running             Running 9 seconds ago
+Tearing down stack...
 Removing leftover containers...
 Pruning networks...
 Restoring hosts file...
@@ -143,7 +151,16 @@ Restoring hosts file...
 
 ## Stack deployment (Manual)
 
-1. Initialize swarm:
+1. Prepare system:
+
+Open up any ports or disable firewall if necessary. Manually stop and remove any leftover docker containers before deploying.
+
+```
+docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null'
+docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
+```
+
+2. Initialize swarm:
 
 Since we are deploying this application as a docker stack, we must initialize the host as a docker swarm node. An attachable network must also be created for the stack, so that containers can be dynamically added to it.
 
@@ -153,10 +170,22 @@ docker swarm init
 docker network create --driver=overlay --attachable pcp
 ```
 
-2. Deploy:
+3. Deploy:
 
-Deploying the application is a simple `docker stack` command using the provided docker-compose.yml configuration file. This file requires the `TAG` and `LOGLEVEL` environment variables to be set.
+Deploying the application is a simple `docker stack` command using the provided docker-compose.yml configuration file. This file requires the `TAG` and `LOGLEVEL` environment variables to be set. 
 
 ```
 TAG=<dev|qa|latest> LOGLEVEL=<DEBUG|INFO|WARN|ERROR|CRITICAL> docker stack deploy -c docker/docker-compose.yml <stack_name>
 ```
+
+4. Tear down stack:
+
+Tear down docker stack.
+
+```
+docker stack rm <stack_name>
+```
+
+5. Remove leftover containers:
+
+Execute commands from step 1 again to stop and remove dangling containers.

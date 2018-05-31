@@ -2,6 +2,8 @@
 
 # This script sets up the host environment to run the application
 # in a docker stack. Loads the provided images.
+# TODO:
+# - add docker auto install
 
 if [[ $# == 0 ]]; then
     echo "Please provide directory to export archive!"
@@ -20,7 +22,7 @@ tar -xzvf $1/ramrodpcp-exports.tar.gz -C $1
 images=()
 
 while IFS= read -d $'\0' -r file ; do
-     images=("${images[@]}" "$file")
+     images+=( "$file" )
 done < <(find ./exports/ -name "*image-*" -print0)
 
 # Load images
