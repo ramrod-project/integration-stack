@@ -8,7 +8,7 @@ Library           XvfbRobot
 Open App
     [Setup]
     Start Virtual Display 1920 1080
-    Open Browser    frontend:8080
+    Open Browser    frontend:8080    firefox
     Page Should Contain    PCP Dashboard
 	
 Search Box
