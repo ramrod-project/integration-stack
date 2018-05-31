@@ -10,6 +10,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 
+stty -echoctl
+
 if ! [ $# == 4 ]; then
     echo "Please supply --tag and --loglevel arguments"
     echo "Usage: deploy.sh --tag <latest|dev|qa> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>"
