@@ -2,37 +2,52 @@
 
 # This script deploys the docker stack. Only works on Ubuntu 16.04 at the moment.
 # TODO:
-# - change hosts environment variable
+# - add default arguments
+
 
 TAG=""
 LOGLEVEL=""
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
-
-# Get IPs
-# IFCONFIG_OUTPUT=$(ifconfig -a | grep -v "lo\|docker" | grep -A 1 "Ethernet" | awk 'NR%3==2 {print $2}' | sed 's/addr://g')
-
-# function readarray() {
-#   local i=0
-#   unset -v "$1"
-#   while IFS= read -r "$1[i++]"; do :; done
-#   eval "[[ \${$1[--i]} ]]" || unset "$1[i]"
-# }
-
-# readarray HOST_IPS < <(echo $IFCONFIG_OUTPUT)
-
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 
-if ! [ $# == 4 ]; then
-    echo "Please supply --tag and --loglevel arguments"
+stty -echoctl
+
+declare -a VALID_TAGS=( "dev" "qa" "latest" )
+declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
+
+if ! [[ $# == 4 ]] && ! [[ $# == 2 ]]; then
     echo "Usage: deploy.sh --tag <latest|dev|qa> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>"
     exit 1
 fi
 
-if ! [ $(which docker) ]; then
-    echo "Docker install not detected!"
-    exit 1
+if ! [[ $(docker --version | grep 18.) ]]; then
+    echo "Docker 18.x-ce install not detected! Exiting..."
+    exit 2
 fi
+
+function contains_element() {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+function validate_tag() {
+    contains_element $1 "${VALID_TAGS[@]}"
+    if ! [[ $? == 0 ]]; then
+        echo "Please select one of: dev|qa|latest for tag"
+        exit 3
+    fi
+}
+
+function validate_loglevel() {
+    contains_element $1 "${VALID_LOGLEVELS[@]}"
+    if ! [[ $? == 0 ]]; then
+        echo "Please select one of: DEBUG|INFO|WARN|ERROR|CRITICAL for loglevel"
+        exit 3
+    fi
+}
 
 ARGS=( $1 $3 )
 i=1
@@ -42,25 +57,29 @@ for arg in "${ARGS[@]}"; do
         "--tag")
             if ! [ "${TAG}" == "" ]; then
                 echo "--tag already supplied!"
-                exit 1
+                exit 4
             fi
-            if [ $i == 1 ]; then
+            if [[ $i == 1 ]]; then
+                validate_tag $2
                 TAG=$2
                 i=i+1
             else
+                validate_tag $4
                 TAG=$4
                 break
             fi
             ;;
         "--loglevel")
-            if ! [ "${LOGLEVEL}" == "" ]; then
+            if ! [[ "${LOGLEVEL}" == "" ]]; then
                 echo "--loglevel already supplied!"
-                exit 1
+                exit 4
             fi
-            if [ $i == 1 ]; then
+            if [[ $i == 1 ]]; then
+                validate_loglevel $2
                 LOGLEVEL=$2
                 i=i+1
             else
+                validate_loglevel $4
                 LOGLEVEL=$4
                 break
             fi
@@ -73,9 +92,14 @@ cp /etc/hosts /etc/hosts.bak
 bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
-declare -a images=("ramrodpcp/database-brain" "ramrodpcp/backend-interpreter" "ramrodpcp/interpreter-plugin" "ramrodpcp/frontend-ui")
+declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" )
+
+if [[ "$TAG" == "qa" ]]; then
+    images+=( "robot-framework-xvfb" )
+fi
+
 for image in "${images[@]}"; do
-    docker image inspect $image:$TAG >> /dev/null
+    docker image inspect ramrodpcp/$image:$TAG >> /dev/null
     if ! [[ $? == 0 ]]; then
         echo "Unable to find image ${image}:${TAG} locally!"
     fi
@@ -100,10 +124,6 @@ trap ctrl_c SIGTSTP
 docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
 
-echo "Opening ports 8080/5000 on firewall..."
-ufw allow 5000
-ufw allow 8080
-
 echo "Deploying stack..."
 TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
 
@@ -111,6 +131,8 @@ echo "You can reach the frontend from this machine at 'http://frontend:8080'."
 echo "If you need to access from another machine or VM host, \
 be sure to add this machine's IP to the hostfile as 'frontend'"
 echo "Running stack, press <CRTL-C> to stop..."
+sleep 2
+watch -d docker stack ps pcp-test
 while true; do
     sleep 1
 done
