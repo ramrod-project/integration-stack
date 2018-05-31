@@ -2,7 +2,8 @@
 
 # This script deploys the docker stack. Only works on Ubuntu 16.04 at the moment.
 # TODO:
-# - add option for robot in 'qa'
+# - add default arguments
+
 
 TAG=""
 LOGLEVEL=""
@@ -12,16 +13,41 @@ DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/a
 
 stty -echoctl
 
-if ! [ $# == 4 ]; then
-    echo "Please supply --tag and --loglevel arguments"
+declare -a VALID_TAGS=( "dev" "qa" "latest" )
+declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
+
+if ! [[ $# == 4 ]] && ! [[ $# == 2 ]]; then
     echo "Usage: deploy.sh --tag <latest|dev|qa> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>"
     exit 1
 fi
 
-if ! [ $(which docker) ]; then
-    echo "Docker install not detected!"
-    exit 1
+if ! [[ $(docker --version | grep 18.) ]]; then
+    echo "Docker 18.x-ce install not detected! Exiting..."
+    exit 2
 fi
+
+function contains_element() {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+function validate_tag() {
+    contains_element $1 "${VALID_TAGS[@]}"
+    if ! [[ $? == 0 ]]; then
+        echo "Please select one of: dev|qa|latest for tag"
+        exit 3
+    fi
+}
+
+function validate_loglevel() {
+    contains_element $1 "${VALID_LOGLEVELS[@]}"
+    if ! [[ $? == 0 ]]; then
+        echo "Please select one of: DEBUG|INFO|WARN|ERROR|CRITICAL for loglevel"
+        exit 3
+    fi
+}
 
 ARGS=( $1 $3 )
 i=1
@@ -31,25 +57,29 @@ for arg in "${ARGS[@]}"; do
         "--tag")
             if ! [ "${TAG}" == "" ]; then
                 echo "--tag already supplied!"
-                exit 1
+                exit 4
             fi
-            if [ $i == 1 ]; then
+            if [[ $i == 1 ]]; then
+                validate_tag $2
                 TAG=$2
                 i=i+1
             else
+                validate_tag $4
                 TAG=$4
                 break
             fi
             ;;
         "--loglevel")
-            if ! [ "${LOGLEVEL}" == "" ]; then
+            if ! [[ "${LOGLEVEL}" == "" ]]; then
                 echo "--loglevel already supplied!"
-                exit 1
+                exit 4
             fi
-            if [ $i == 1 ]; then
+            if [[ $i == 1 ]]; then
+                validate_loglevel $2
                 LOGLEVEL=$2
                 i=i+1
             else
+                validate_loglevel $4
                 LOGLEVEL=$4
                 break
             fi
@@ -93,10 +123,6 @@ trap ctrl_c SIGTSTP
 
 docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
-
-echo "Opening ports 8080/5000 on firewall..."
-ufw allow 5000
-ufw allow 8080
 
 echo "Deploying stack..."
 TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
