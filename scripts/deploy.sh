@@ -2,7 +2,6 @@
 
 # This script deploys the docker stack. Only works on Ubuntu 16.04 at the moment.
 # TODO:
-# - change hosts environment variable
 # - add option for robot in 'qa'
 
 TAG=""
@@ -104,6 +103,8 @@ echo "You can reach the frontend from this machine at 'http://frontend:8080'."
 echo "If you need to access from another machine or VM host, \
 be sure to add this machine's IP to the hostfile as 'frontend'"
 echo "Running stack, press <CRTL-C> to stop..."
+sleep 2
+watch -d docker stack ps pcp-test
 while true; do
     sleep 1
 done
