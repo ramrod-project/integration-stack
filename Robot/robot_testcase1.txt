@@ -1,6 +1,6 @@
 *** Settings ***
 Suite Setup
-Suite Teardown
+Suite Teardown    
 Library           Selenium2Library
 Library           XvfbRobot
 
@@ -13,14 +13,33 @@ Open App
 	
 Search Box
     Input Text    searchNameHere    bogus plugin
-	Click Button    user_search
-	Page Should Contain    PCP Dashboard
+    Click Button    user_search
+    Page Should Contain    PCP Dashboard
 	
 Add Job
     Click Button    addjob_button
-	Page Should Contain    PCP Dashboard
+    Page Should Contain Element    pluginid1
+    Page Should Contain Element    updateid1    terminal1
+    Click Button    addjob_button
+    Page Should Contain Element    pluginid2
+    Page Should Contain Element    updateid2    terminal2
+    Click Button    addjob_button
+    Page Should Contain Element    pluginid3
+    Page Should Contain Element    updateid3    terminal3
 	
 Execute Sequence
     Click Button    execute_button
-	Element Should Contain    updateid1    terminal1
+    Element Should Contain    updateid1    terminal1
+	
+Clear Jobs
+    Click Button    clear_buttonid
+    Page Should Not Contain Element    pluginid1
+    Page Should Not Contain Element    updateid1    terminal1
+    Page Should Not Contain Element    pluginid2
+    Page Should Not Contain Element    updateid2    terminal2
+    Page Should Not Contain Element    pluginid3
+    Page Should Not Contain Element    updateid3    terminal3	
+	
+	
+
     	
