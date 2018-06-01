@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ramrod-project/integration-stack.svg?branch=dev)](https://travis-ci.org/ramrod-project/integration-stack)
+
+
 # PCP stack deployment guide
 
 ## Docker installation from package
