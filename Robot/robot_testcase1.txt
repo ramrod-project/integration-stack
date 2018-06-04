@@ -18,6 +18,7 @@ Page Content Check
 	Page Should Contain    Command Builder
 	Page Should Contain    Jobs Queue
 	Page Should Contain    Host
+	Page Should Contain    Job #
 	Page Should Contain Button    user_search
 	Page Should Contain Button    addjob_button
 	Page Should Contain Button    execute_button	
