@@ -11,6 +11,30 @@ Open App
     Open Browser    http://frontend:8080
 	Page Should Contain    PCP Dashboard
 	
+Page Content Check
+    Page Should Contain    Target List
+	Page Should Contain    Plugin Name
+	Page Should Contain    Location
+	Page Should Contain    Command Builder
+	Page Should Contain    Jobs Queue
+	Page Should Contain    job #
+	Page Should Contain    Host
+	Page Should Contain    job Output	
+	Page Should Contain Button    user_search
+	Page Should Contain Button    addjob_button
+	Page Should Contain Button    execute_button	
+	Page Should Contain Element    user_search_hide_id
+	Page Should Contain Element    tab1
+	Page Should Contain Element    tab_2
+	Page Should Contain Element    tab_3
+	Page Should Contain Element    tab_4
+	Page Should Contain Element    tab_5
+	Page Should Contain Element    boxtwofooterid
+	Page Should Contain Element    hiddenArgsid
+	Page Should Contain Element    example3
+	Page Should Contain Element    third_box_content
+	Page Should Contain Element    searchNameHere
+	
 Search Box
     Input Text    searchNameHere    bogus plugin
     Click Button    user_search
@@ -38,7 +62,11 @@ Clear Jobs
     Page Should Not Contain Element    pluginid2
     Page Should Not Contain Element    updateid2    terminal2
     Page Should Not Contain Element    pluginid3
-    Page Should Not Contain Element    updateid3    terminal3	
+    Page Should Not Contain Element    updateid3    terminal3
+
+Execute Empty Sequence
+    Click Button    execute_button
+    Page Should Not Contain    ValueError	
 	
 	
 
