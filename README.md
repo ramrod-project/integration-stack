@@ -1,9 +1,71 @@
-[![Build Status](https://travis-ci.org/ramrod-project/integration-stack.svg?branch=dev)](https://travis-ci.org/ramrod-project/integration-stack)
-
-
 # PCP stack deployment guide
 
-## Docker installation from package
+[![Build Status](https://travis-ci.org/ramrod-project/integration-stack.svg?branch=dev)](https://travis-ci.org/ramrod-project/integration-stack)
+
+## Table of Contents
+
+[Docker installation (repo)](#dockerrepo)
+[Docker installation (package)](#dockerpackage)
+[Export files (QA)](#exportqa)
+[Export files (production)](#exportprod)
+[Load images](#load)
+[Deploy stack (auto)](#stackauto)
+[Deploy stack (manual)](#stackmanual)
+
+### Docker installation (from repo)<a name="dockerrepo"></a>
+
+**_Ubuntu 16.04_**
+
+Set up repository in apt package manager.
+
+1. Update `apt` index:
+
+```
+sudo apt-get update
+```
+
+2. Install dependencies for install:
+
+```
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+```
+
+3. Add GPG key:
+
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
+4. Set up stable repo:
+
+```
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+```
+
+5. Update `apt`:
+
+```
+sudo apt-get update
+```
+
+6. Install docker-ce.
+
+```
+sudo apt-get install docker-ce
+```
+
+**_Centos 7_**
+
+
+
+### Docker installation (from package)<a name="dockerpackage"></a>
 
 **_Ubuntu 16.04_**
 
@@ -72,7 +134,7 @@ usermod -aG docker <user>
 
 So you don't have to `sudo` every docker command. Replace \<user\> with your username.
 
-## Exporting images/repos for offline use
+### Exporting images/repos (for QA)<a name="exportqa"></a>
 
 1. Run the export script and select the appropriate tag from the prompt
 
@@ -101,7 +163,11 @@ $ tar -t -f ramrodpcp-exports.tar.gz
 ./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz
 ```
 
-## Load images from files for offline use
+### Exporting images/repos (for production)<a name="exportprod"></a>
+
+
+
+### Load images from files for deployment<a name="load"></a>
 
 1. Load images from .tar.gz
 
@@ -124,7 +190,7 @@ Loading ./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz...
 Loaded image: ramrodpcp/frontend-ui:dev
 ```
 
-## Stack deployment (Automated)
+### Stack deployment (Automated)<a name="stackauto"></a>
 
 1. Run the deployment script
 
@@ -152,7 +218,7 @@ Pruning networks...
 Restoring hosts file...
 ```
 
-## Stack deployment (Manual)
+### Stack deployment (Manual)<a name="stackmanual"></a>
 
 1. Prepare system:
 
