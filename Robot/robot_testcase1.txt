@@ -29,6 +29,8 @@ Page Content Check
 	Page Should Contain Element    tab_4
 	Page Should Contain Element    tab_5
 	Page Should Contain Element    boxtwofooterid
+	Page Should Contain Element    example3_wrapper
+	Page Should Contain Element    hiddenArgsId
 	Page Should Contain Element    example3
 	Page Should Contain Element    third_box_content
 	Page Should Contain Element    searchNameHere
