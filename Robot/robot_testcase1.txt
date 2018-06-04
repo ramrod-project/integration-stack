@@ -17,7 +17,6 @@ Page Content Check
 	Page Should Contain    Location
 	Page Should Contain    Command Builder
 	Page Should Contain    Jobs Queue
-	Page Should Contain    job #
 	Page Should Contain    Host
 	Page Should Contain    job Output	
 	Page Should Contain Button    user_search
