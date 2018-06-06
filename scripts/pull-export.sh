@@ -52,6 +52,7 @@ for img in "${images[@]}"; do
     docker inspect --format='{{index .RepoDigests 0}}' $imagename | sed 's/^[^:]*://g' >> $imagesave.sha
     docker save $imagename -o $imagesave.tar
     tar -rf $imagesave.tar $imagesave.sha
+    rm -rf *.sha
     gzip $imagesave.tar && mv $imagesave.tar.gz ./exports
 done
 
