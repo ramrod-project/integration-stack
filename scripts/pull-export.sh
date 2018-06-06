@@ -30,7 +30,7 @@ do
     esac
 done
 
-mkdir {exports,repos,scripts}
+mkdir {exports,repos,.scripts}
 
 declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" )
 
@@ -63,9 +63,9 @@ for repo in "frontend-ui" "backend-interpreter" "database-brain" "integration-st
     tar -czvf ./exports/repo-clone-$reposave.tar.gz ./repos/$repo >> /dev/null
 done
 
-cp ./repos/integration-stack/scripts/* ./scripts/
+cp ./repos/integration-stack/scripts/* ./.scripts/
 
 echo "Exporting repos, images, and scripts to file ramrodpcp-exports-${selection}_${timestamp}.tar.gz..."
-tar -czvf ramrodpcp-exports-$selection_$timestamp.tar.gz ./exports ./scripts
+tar -czvf ramrodpcp-exports-$selection_$timestamp.tar.gz ./exports ./.scripts
 echo "Cleaning up..."
-rm -rf {exports,repos}
+rm -rf {exports,repos,.scripts}

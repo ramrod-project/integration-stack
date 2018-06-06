@@ -178,7 +178,7 @@ tar -xzvf ramrodpcp-exports-***_***.tar.gz
 Run the 'setup.sh script, passing the directory to the export archive.'
 
 ```
-$ ./scripts/setup.sh ./exports/
+$ ./.scripts/setup.sh ./exports/
 ```
 
 This finds and loads the images 
