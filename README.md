@@ -4,13 +4,13 @@
 
 ## Table of Contents
 
-[Docker installation (repo)](#dockerrepo)
-[Docker installation (package)](#dockerpackage)
-[Export files (QA)](#exportqa)
-[Export files (production)](#exportprod)
-[Load images](#load)
-[Deploy stack (auto)](#stackauto)
-[Deploy stack (manual)](#stackmanual)
+[Docker installation (repo)](#dockerrepo)  
+[Docker installation (package)](#dockerpackage)  
+[Export files (QA)](#exportqa)  
+[Export files (production)](#exportprod)  
+[Load images](#load)  
+[Deploy stack (auto)](#stackauto)  
+[Deploy stack (manual)](#stackmanual)  
 
 ### Docker installation (from repo)<a name="dockerrepo"></a>
 
@@ -151,16 +151,14 @@ $ ./pull-export.sh
 These are all compressed and stored in an export archive: ramrodpcp-exports.tar.gz.
 
 ```
-$ tar -t -f ramrodpcp-exports.tar.gz
+$ tar -t -f ramrodpcp-exports-***_***.tar.gz
 ./exports/
 ./exports/image-database-brain-124531-05-23-18-CDT.tar.gz
 ./exports/repo-clone-database-brain-124659-05-23-18-CDT.tar.gz
 ./exports/image-interpreter-plugin-124612-05-23-18-CDT.tar.gz
 ./exports/image-backend-interpreter-124526-05-23-18-CDT.tar.gz
 ./exports/repo-clone-integration-stack-124702-05-23-18-CDT.tar.gz
-./exports/repo-clone-frontend-ui-124648-05-23-18-CDT.tar.gz
-./exports/repo-clone-backend-interpreter-124657-05-23-18-CDT.tar.gz
-./exports/image-frontend-ui-124600-05-23-18-CDT.tar.gz
+...
 ```
 
 ### Exporting images/repos (for production)<a name="exportprod"></a>
@@ -169,12 +167,18 @@ $ tar -t -f ramrodpcp-exports.tar.gz
 
 ### Load images from files for deployment<a name="load"></a>
 
-1. Load images from .tar.gz
+1. Extract the main archive
+
+```
+tar -xzvf ramrodpcp-exports-***_***.tar.gz
+```
+
+2. Load images from .tar.gz
 
 Run the 'setup.sh script, passing the directory to the export archive.'
 
 ```
-$ ./setup.sh <export_directory>
+$ ./.scripts/setup.sh ./exports/
 ```
 
 This finds and loads the images 
