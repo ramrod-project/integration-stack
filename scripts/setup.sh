@@ -23,6 +23,9 @@ while IFS= read -d $'\0' -r file ; do
      images+=( "$file" )
 done < <(find $1 -name "*image-*" -print0)
 
+# Purge existing images
+docker images | grep ramrodpcp | awk '{print $3}' | xargs docker rmi -f
+
 # Load images
 for img in "${images[@]}"; do
     echo "Loading ${img}..."
