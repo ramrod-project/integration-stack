@@ -63,6 +63,6 @@ done
 cp ./repos/integration-stack/scripts/* ./.scripts/
 
 echo "Exporting repos, images, and scripts to file ramrodpcp-exports-${selection}_${timestamp}.tar.gz..."
-tar -czvf ramrodpcp-exports-$selection_$timestamp.tar.gz ./exports ./.scripts
+tar -czvf ramrodpcp-exports-$selection_$timestamp.tar.gz ./exports ./.scripts ./docker/docker-compose.yml
 echo "Cleaning up..."
 rm -rf {exports,repos,.scripts}
