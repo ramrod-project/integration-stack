@@ -29,6 +29,20 @@ services:
       - 8080:8080
     environment:
       - STAGE=PROD
+  # Config information for the frontend container service
+  websockets:
+    image: ramrodpcp/websocket-server:${TAG}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      pcp:
+        aliases:
+          - websockets
+    ports:
+      - 3000:3000
+    environment:
+      - STAGE=PROD
   # Config information for the RethinkDB container service
   database:
     image: ramrodpcp/database-brain:${TAG}
