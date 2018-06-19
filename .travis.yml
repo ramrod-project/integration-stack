@@ -48,8 +48,9 @@ install:
 before_script:
   - docker swarm init
   - docker network create --driver=overlay --attachable pcp
-  - docker stack deploy -c docker/docker-compose.yml test-stack
-  - sleep 6
+  - mkdir db_logs 2>&1 >>/dev/null
+  - TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
+  - sleep 15
   - docker stack ps test-stack
   - docker ps -a
 
