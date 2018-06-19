@@ -43,6 +43,8 @@ install:
   - docker pull ramrodpcp/database-brain:$TAG
   - docker pull ramrodpcp/backend-interpreter:$TAG
   - docker pull ramrodpcp/interpreter-plugin:$TAG
+  - docker pull ramrodpcp/websocket-server:$TAG
+  - docker pull ramrodpcp/robot-framework-xvfb:$TAG
 
 # Third step, set up environment and run the stack.
 before_script:
@@ -51,7 +53,7 @@ before_script:
   - mkdir db_logs 2>&1 >>/dev/null
   - TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
   - sleep 15
-  - docker stack ps test-stack
+  - docker stack ps pcp-test --no-trunc
   - docker ps -a
 
 # Fourth step, test away!
