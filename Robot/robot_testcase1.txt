@@ -74,17 +74,9 @@ Add Target
 	Input Text    location_num    192.168.1.1
 	Input Text    port_num    5000
 	Input Text    optional_char    blahblah
-	Press Key    \\13
+	Press Key     optional_char    \\13
 
-Add Job
-    Element Should Contain    target_table    Harness
-	Element Should Contain    target_table    192.168.1.1
-	Page Should Contain Element    add_job_sc_id0
-	Click Element    add_job_sc_id0
-	Page Should Contain Element    outq_content
-	Element Should Contain    pluginid1    Harness
-	Page Should Contain Element    updateid1
-	Element Should Contain    updateid1    terminal1
+
 	
 
 	
