@@ -28,17 +28,18 @@ Page Content Check
 	Page Should Contain Element    tab_3
 	Page Should Contain Element    tab_4
 	Page Should Contain Element    tab_5
-	Page Should Contain Element    boxtwofooterid
-	Page Should Contain Element    example3_wrapper
+    Page Should Contain Element    boxtwofooterid
+    Page Should Contain Element    example3_wrapper
 	Page Should Contain Element    third_box_content
 	Page Should Contain Element    searchNameHere
 	
 Search Box
-    Input Text    searchNameHere    bogus plugin
-    Click Button    user_search
-    Page Should Contain    PCP Dashboard
+    Input Text    searchNameHere    h
+    Page Should Contain Element   w1_command_active_filter
+    Press Key    searchNameHere
+    Page Should Not Contain    w1_command_active_filter
 	
-Add Job
+Add Dummy Jobs
     Click Button    addjob_button
     Page Should Contain Element    pluginid1
     Page Should Contain Element    updateid1    terminal1
@@ -53,7 +54,7 @@ Execute Sequence
     Click Button    execute_button
     Element Should Contain    updateid1    terminal1
 	
-Clear Jobs
+Clear Dummy Jobs
     Click Button    clear_buttonid
     Page Should Not Contain Element    pluginid1
     Page Should Not Contain Element    updateid1    terminal1
@@ -64,8 +65,33 @@ Clear Jobs
 
 Execute Empty Sequence
     Click Button    execute_button
-    Page Should Not Contain    ValueError	
+    Page Should Not Contain    ValueError
 	
+Add Target
+    Click Element    add_target_id
+	Page Should Contain    New Target Form
+	Input Text    plugin_name    Harness
+	Input Text    location_num    192.168.1.1
+	Input Text    port_num    5000
+	Input Text    optional_char    blahblah
+	Press Key    \\13
+
+Add Job
+    Element Should Contain    target_table    Harness
+	Element Should Contain    target_table    192.168.1.1
+	Page Should Contain Element    add_job_sc_id0
+	Click Element    add_job_sc_id0
+	Page Should Contain Element    outq_content
+	Element Should Contain    pluginid1    Harness
+	Page Should Contain Element    updateid1
+	Element Should Contain    updateid1    terminal1
 	
 
-    	
+	
+
+
+	
+    
+	
+	
+	
