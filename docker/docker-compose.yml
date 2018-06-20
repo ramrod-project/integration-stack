@@ -53,6 +53,8 @@ services:
       pcp:
         aliases:
           - rethinkdb
+    volumes:
+      - '${LOGDIR}/db_logs:/logs'
   # Config information for the backend container service
   backend:
     image: ramrodpcp/backend-interpreter:${TAG}
