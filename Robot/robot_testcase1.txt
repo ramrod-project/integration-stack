@@ -36,7 +36,7 @@ Page Content Check
 Search Box
     Input Text    searchNameHere    h
     Page Should Contain Element   w1_command_active_filter
-    Press Key    searchNameHere
+    Press Key    searchNameHere    \\08
     Page Should Not Contain    w1_command_active_filter
 	
 Add Dummy Jobs
