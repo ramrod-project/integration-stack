@@ -4,7 +4,6 @@
 # images based on the tag provided by user input. It then exports
 # them to .tar.gz files.
 # TODO:
-# - add udev deploy option
 
 PS3="Please select a release to download and export: "
 options=( "dev" "qa" "latest" "exit" )
