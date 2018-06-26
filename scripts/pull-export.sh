@@ -4,7 +4,6 @@
 # images based on the tag provided by user input. It then exports
 # them to .tar.gz files.
 # TODO:
-# - add udev deploy option
 
 PS3="Please select a release to download and export: "
 options=( "dev" "qa" "latest" "exit" )
@@ -32,7 +31,7 @@ done
 
 mkdir {exports,repos,.scripts}
 
-declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" )
+declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" )
 
 if [[ "${selection}" == "qa" || "${selection}" == "dev" ]]; then
     images+=( "robot-framework-xvfb" )
