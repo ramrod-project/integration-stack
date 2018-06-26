@@ -32,7 +32,7 @@ done
 
 mkdir {exports,repos,.scripts}
 
-declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" )
+declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" )
 
 if [[ "${selection}" == "qa" || "${selection}" == "dev" ]]; then
     images+=( "robot-framework-xvfb" )
