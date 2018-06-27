@@ -77,7 +77,7 @@ echo "Saving new image to ./${imagesave}.tar.gz"
 docker save ramrodpcp/interpreter-plugin:$TAG -o $imagesave.tar
 gzip $imagesave.tar && mv $imagesave.tar.gz $EXPORTS_DIR
 
-tar -cvf ramrod-deployment-package-$timestamp.tar $EXPORTS_DIR$imagesave.tar.gz ./.scripts/setup.sh ./.scripts/deploy.sh
+tar -cvf ramrod-deployment-package-$timestamp.tar $EXPORTS_DIR/$imagesave.tar.gz ./.scripts/setup.sh ./.scripts/deploy.sh ./docker/docker-compose.yml
 
 for file in "${exportimages[@]}"; do
     tar -rvf ramrod-deployment-package-$timestamp.tar $file
