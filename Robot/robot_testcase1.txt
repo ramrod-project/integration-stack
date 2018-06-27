@@ -12,33 +12,33 @@ Open App
 	Page Should Contain    PCP Dashboard
 	
 Page Content Check
-    Page Should Contain    Target List
-	Page Should Contain    Plugin Name
-	Page Should Contain    Location
-	Page Should Contain    Command Builder
-	Page Should Contain    Jobs Queue
-	Page Should Contain    Host
-	Page Should Contain    Job #
-	Page Should Contain Button    user_search
-	Page Should Contain Button    addjob_button
-	Page Should Contain Button    execute_button	
-	Page Should Contain Element    user_search_hide_id
-	Page Should Contain Element    tab1
-	Page Should Contain Element    tab_2
-	Page Should Contain Element    tab_3
-	Page Should Contain Element    tab_4
-	Page Should Contain Element    tab_5
-    Page Should Contain Element    boxtwofooterid
-    Page Should Contain Element    example3_wrapper
-	Page Should Contain Element    third_box_content
-	Page Should Contain Element    searchNameHere
-	
+     Page Should Contain    Target List
+     Page Should Contain    Plugin Name
+     Page Should Contain    Location
+     Page Should Contain    Command Builder
+     Page Should Contain    Jobs Queue
+     Page Should Contain    Host
+     Page Should Contain    Job #
+     Page Should Contain Button    user_search
+     Page Should Contain Button    addjob_button
+     Page Should Contain Button    execute_button	
+     Page Should Contain Element    user_search_hide_id
+     Page Should Contain Element    tab1
+     Page Should Contain Element    tab_2
+     Page Should Contain Element    tab_3
+     Page Should Contain Element    tab_4
+     Page Should Contain Element    tab_5
+     Page Should Contain Element    boxtwofooterid
+     Page Should Contain Element    example3_wrapper
+     Page Should Contain Element    third_box_content
+     Page Should Contain Element    searchNameHere
+     
 Search Box
-    Input Text    searchNameHere    h
-    Page Should Contain Element   w1_command_active_filter
-    Press Key    searchNameHere    \\08
-    Page Should Not Contain    w1_command_active_filter
-	
+   Input Text    searchNameHere    h
+   Page Should Contain Element   w1_command_active_filter
+   Press Key    searchNameHere    \\08
+   Page Should Not Contain    w1_command_active_filter    
+
 Add Dummy Jobs
     Click Button    addjob_button
     Page Should Contain Element    pluginid1
@@ -50,7 +50,7 @@ Add Dummy Jobs
     Page Should Contain Element    pluginid3
     Page Should Contain Element    updateid3    terminal3
 	
-Execute Sequence
+Execute Empty Sequence
     Click Button    execute_button
     Element Should Contain    updateid1    terminal1
 	
@@ -63,18 +63,6 @@ Clear Dummy Jobs
     Page Should Not Contain Element    pluginid3
     Page Should Not Contain Element    updateid3    terminal3
 
-Execute Empty Sequence
-    Click Button    execute_button
-    Page Should Not Contain    ValueError
-	
-Add Target
-    Click Element    add_target_id
-	Page Should Contain    New Target Form
-	Input Text    plugin_name    Harness
-	Input Text    location_num    192.168.1.1
-	Input Text    port_num    5000
-	Input Text    optional_char    blahblah
-	Press Key     optional_char    \\13
 
 
 	
