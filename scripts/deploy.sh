@@ -136,7 +136,7 @@ cp /etc/hosts /etc/hosts.bak
 bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
 
-declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" )
+declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" "websocket-server" )
 
 if [[ "$TAG" == "qa" ]]; then
     images+=( "robot-framework-xvfb" )

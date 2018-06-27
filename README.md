@@ -161,16 +161,36 @@ $ tar -t -f ramrodpcp-exports-***_***.tar.gz
 ...
 ```
 
-### Exporting images/repos (for production)<a name="exportprod"></a>
+### Exporting images/repos from dev to production<a name="exportprod"></a>
 
+1. After plugin development is complete, place all plugin `.py` files into a folder located in the `./.scripts/` folder (Assuming you've already un-tarred the main exports tarfile to your working directory - see [Load images](#load)).
 
+```
+$ mkdir ./.scripts/plugins
+$ cp <plugin1>.py ./.scripts/plugins
+```
 
-### Load images from files for deployment<a name="load"></a>
+2. Run the dev-export.sh script to save production files to a .tar.gz file.
+
+```
+$ ./.scripts/dev-export.sh ./exports/ ./.scripts/plugins
+1) dev
+2) qa
+3) latest
+4) exit
+Please select a release to export: 1
+Please the ports needed by your plugin(s) separated by a space: 8080 9090 10100
+...
+```
+
+This will generate a ramrod-deployment-package-*.tar.gz file with the container images and scripts needed to run the stack. 
+
+### Load images from files<a name="load"></a>
 
 1. Extract the main archive
 
 ```
-tar -xzvf ramrodpcp-exports-***_***.tar.gz
+$ tar -xzvf ramrodpcp-exports-***_***.tar.gz
 ```
 
 2. Load images from .tar.gz
