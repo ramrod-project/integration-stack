@@ -67,11 +67,11 @@ Add Target
      Press Key     optional_char    \\13
 
 Search Box 
-     Input Text    searchNameHere    h
+     Input Text    searchNameHere_id    h
      Page Should Contain Element    w1_command_active_filter
      Element Should Contain    w1_command_active_filter    currently filtering on: h
      Element Should Contain    target_table    Harness
-     Press Key    searchNameHere    \\08
+     Press Key    searchNameHere_id    \\08
      Page Should Not Contain    w1_command_active_filter
 
 Add Job
