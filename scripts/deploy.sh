@@ -4,27 +4,80 @@
 # TODO:
 # - add default arguments
 
-
+# Arguments
 TAG=""
 LOGLEVEL=""
+
+# Get directory info
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 
+# Prevent CRTL-C echo
 stty -echoctl
 
+# Valid arguments
 declare -a VALID_TAGS=( "dev" "qa" "latest" )
 declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
 
-if ! [[ $# == 4 ]] && ! [[ $# == 2 ]]; then
-    echo "Usage: deploy.sh --tag <latest|dev|qa> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>"
-    exit 1
-fi
+function parse_args() {
 
-if ! [[ $(docker --version | grep 18.) ]]; then
-    echo "Docker 18.x-ce install not detected! Exiting..."
-    exit 2
-fi
+    ARGS=( "$@" )
+
+    if ! [[ $# == 4 ]] && ! [[ $# == 2 ]]; then
+        echo "Usage: deploy.sh --tag <latest|dev|qa> --loglevel <DEBUG|INFO|WARN|ERROR|CRITICAL>"
+        exit 1
+    fi
+
+    i=1
+    if [[ $# == 2 ]]; then
+        i=i+1
+    fi
+
+    for arg in "${ARGS[@]}"; do
+        case $arg in
+            "--tag")
+                if ! [ "${TAG}" == "" ]; then
+                    echo "--tag already supplied!"
+                    exit 4
+                fi
+                if [[ $i == 1 ]]; then
+                    validate_tag $2
+                    TAG=$2
+                    i=i+1
+                elif [[ $# == 2 ]]; then
+                    validate_tag $2
+                    TAG=$2
+                    break
+                else
+                    validate_tag $4
+                    TAG=$4
+                    break
+                fi
+                ;;
+            "--loglevel")
+                if ! [[ "${LOGLEVEL}" == "" ]]; then
+                    echo "--loglevel already supplied!"
+                    exit 4
+                fi
+                if [[ $i == 1 ]]; then
+                    validate_loglevel $2
+                    LOGLEVEL=$2
+                    i=i+1
+                elif [[ $# == 2 ]]; then
+                    validate_loglevel $2
+                    LOGLEVEL=$2
+                    break
+                else
+                    validate_loglevel $4
+                    LOGLEVEL=$4
+                    break
+                fi
+                ;;
+            *) continue;;
+        esac
+    done
+}
 
 function contains_element() {
   local e match="$1"
@@ -49,63 +102,7 @@ function validate_loglevel() {
     fi
 }
 
-ARGS=( $1 $3 )
-i=1
-
-for arg in "${ARGS[@]}"; do
-    case $arg in
-        "--tag")
-            if ! [ "${TAG}" == "" ]; then
-                echo "--tag already supplied!"
-                exit 4
-            fi
-            if [[ $i == 1 ]]; then
-                validate_tag $2
-                TAG=$2
-                i=i+1
-            else
-                validate_tag $4
-                TAG=$4
-                break
-            fi
-            ;;
-        "--loglevel")
-            if ! [[ "${LOGLEVEL}" == "" ]]; then
-                echo "--loglevel already supplied!"
-                exit 4
-            fi
-            if [[ $i == 1 ]]; then
-                validate_loglevel $2
-                LOGLEVEL=$2
-                i=i+1
-            else
-                validate_loglevel $4
-                LOGLEVEL=$4
-                break
-            fi
-            ;;
-        *) echo "argument ${arg} not recognized!";;
-    esac
-done
-
-cp /etc/hosts /etc/hosts.bak
-bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
-echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
-
-declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" )
-
-if [[ "$TAG" == "qa" ]]; then
-    images+=( "robot-framework-xvfb" )
-fi
-
-for image in "${images[@]}"; do
-    docker image inspect ramrodpcp/$image:$TAG >> /dev/null
-    if ! [[ $? == 0 ]]; then
-        echo "Unable to find image ${image}:${TAG} locally!"
-    fi
-done
-
-crtl_c() {
+function crtl_c() {
     echo "Tearing down stack..."
     docker stack rm pcp-test 2>&1 >>/dev/null
     echo "Removing leftover containers..."
@@ -118,6 +115,40 @@ crtl_c() {
     exit 0
 }
 
+if ! [[ $(docker --version | grep 18.) ]]; then
+    echo "Docker 18.x-ce install not detected! Exiting..."
+    exit 2
+fi
+
+if [[ $# > 0 ]]; then
+    parse_args $@
+fi
+
+if [[ "$TAG" == "" ]]; then
+    TAG="latest"
+fi
+
+if [[ "$LOGLEVEL" == "" ]]; then
+    LOGLEVEL="INFO"
+fi
+
+cp /etc/hosts /etc/hosts.bak
+bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
+echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
+
+declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" "websocket-server" )
+
+if [[ "$TAG" == "qa" ]]; then
+    images+=( "robot-framework-xvfb" )
+fi
+
+for image in "${images[@]}"; do
+    docker image inspect ramrodpcp/$image:$TAG >> /dev/null
+    if ! [[ $? == 0 ]]; then
+        echo "Unable to find image ${image}:${TAG} locally!"
+    fi
+done
+
 trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
@@ -125,7 +156,8 @@ docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
 
 echo "Deploying stack..."
-TAG=$TAG LOGLEVEL=$LOGLEVEL docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
+mkdir $BASE_DIR/db_logs 2>&1 >>/dev/null
+TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
 
 echo "You can reach the frontend from this machine at 'http://frontend:8080'."
 echo "If you need to access from another machine or VM host, \
