@@ -35,6 +35,7 @@ Page Content Check
      
 Search Box
    Input Text    searchNameHere    h
+   Wait Until Element Is Visible    w1_command_active_filter    10
    Page Should Contain Element   w1_command_active_filter
    Press Key    searchNameHere    \\08
    Page Should Not Contain    w1_command_active_filter    
