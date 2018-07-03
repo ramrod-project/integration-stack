@@ -95,7 +95,7 @@ Delete Job
     Click Button     clear_seq_buttonid
     Element Should Not Contain    pluginid1    Harness
     Click Element    download_status
-    Wait Until Element Is Visible    pluginid1    20
+    Wait until page contains element    pluginid1    20
     Element Should Contain    pluginid1    Harness
     Element Should Contain    addressid1    192.168.1.1
     Click Button    clear_buttonid
