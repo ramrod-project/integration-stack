@@ -92,11 +92,11 @@ Add Job
 
 Delete Job
     Click Button     clear_seq_buttonid
-    Page Should Not Contain Element   pluginid1
+    Element Should Not Contain    pluginid1    Harness
 
 Add Job Again
     Click Element    add_job_sc_id0
-    Wait Until Page Contains element    pluginid1    20
+    Wait Until Page Contains element    pluginid1    30
     Element Should Contain    pluginid1    Harness
     Page Should Contain Element    updateid1
     Element Should Contain    updateid1    terminal1
