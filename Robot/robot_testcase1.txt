@@ -91,11 +91,9 @@ Add Job
     Element Should Contain    updateid1    terminal1
 
 Delete Job
-    Click Element    upload_status
     Click Button     clear_seq_buttonid
-    Element Should Not Contain    pluginid1    Harness
-    Click Element    download_status
-    Wait until page contains element    pluginid1    30
+    Page Should Not Contain    pluginid1
+
 
 
 
