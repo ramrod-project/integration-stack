@@ -74,12 +74,13 @@ Search Box
     Wait until element is visible    searchNameHere
     Input Text    searchNameHere    h
     Page Should Contain Element    w1_command_active_filter
-    Element Should Contain    w1_command_active_filter    currently filtering on: h
+    Element Should Contain    w1_command_active_filter    Currently filtering on: h
     Element Should Contain    target_table    Harness
     Press Key    searchNameHere    \\08
     Page Should Not Contain    w1_command_active_filter
 
 Add Job
+    Wait until page contains element    target_table
     Element Should Contain    target_table    Harness
     Element Should Contain    target_table    192.168.1.1
     Page Should Contain Element    add_job_sc_id0
