@@ -31,10 +31,11 @@ done
 
 mkdir {exports,repos,.scripts}
 
-declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" )
+declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" )
 
 if [[ "${selection}" == "qa" || "${selection}" == "dev" ]]; then
     images+=( "robot-framework-xvfb" )
+    images+=( "devguide-api" )
 fi
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )

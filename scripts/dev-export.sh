@@ -53,7 +53,7 @@ done
 
 read -p 'Please the ports needed by your plugin(s) separated by a space: ' PORTS
 
-declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" )
+declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" )
 
 exportimages=()
 
