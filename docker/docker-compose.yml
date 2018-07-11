@@ -69,6 +69,7 @@ services:
     # to be passed in. These are taken from the environment
     # in which the stack is run.
     environment:
+      - START_HARNESS=${START_HARNESS}
       - STAGE=PROD
       - LOGLEVEL=${LOGLEVEL}
       - TRAVIS_BRANCH=${TAG}
