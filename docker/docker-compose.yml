@@ -55,6 +55,7 @@ services:
           - rethinkdb
     volumes:
       - '${LOGDIR}/db_logs:/logs'
+      - brain-volume:/mnt/fuse
   # Config information for the backend container service
   backend:
     image: ramrodpcp/backend-interpreter:${TAG}
@@ -81,3 +82,16 @@ services:
 networks:
   pcp:
     external: true
+
+services:
+  db:
+    image: db
+    volumes:
+      - data-volume:/var/lib/db
+  backup:
+    image: backup-service
+    volumes:
+      - data-volume:/var/lib/backup/data
+
+volumes:
+  brain-volume:
