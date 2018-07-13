@@ -83,15 +83,5 @@ networks:
   pcp:
     external: true
 
-services:
-  db:
-    image: db
-    volumes:
-      - data-volume:/var/lib/db
-  backup:
-    image: backup-service
-    volumes:
-      - data-volume:/var/lib/backup/data
-
 volumes:
   brain-volume:
