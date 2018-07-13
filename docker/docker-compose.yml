@@ -6,7 +6,7 @@
 # - add $TAG environment variable to specify which version (dev,qa,latest)
 # - rework cronjob to pull from dev
 
-version: "3"
+version: "3.4"
 
 # In a docker swarm, each container is run as a 'service',
 # which is managed by docker through the swarm as opposed
@@ -85,3 +85,4 @@ networks:
 
 volumes:
   brain-volume:
+    name: brain-volume

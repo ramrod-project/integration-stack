@@ -177,7 +177,7 @@ docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
 
 echo "Deploying stack..."
-mkdir $BASE_DIR/db_logs 2>&1 >>/dev/null
+mkdir $BASE_DIR/db_logs 2>>/dev/null
 START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
 
 echo "You can reach the frontend from this machine at 'http://frontend:8080'."
