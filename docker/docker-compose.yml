@@ -6,7 +6,7 @@
 # - add $TAG environment variable to specify which version (dev,qa,latest)
 # - rework cronjob to pull from dev
 
-version: "3"
+version: "3.4"
 
 # In a docker swarm, each container is run as a 'service',
 # which is managed by docker through the swarm as opposed
@@ -55,6 +55,7 @@ services:
           - rethinkdb
     volumes:
       - '${LOGDIR}/db_logs:/logs'
+      - brain-volume:/mnt/fuse
   # Config information for the backend container service
   backend:
     image: ramrodpcp/backend-interpreter:${TAG}
@@ -69,6 +70,7 @@ services:
     # to be passed in. These are taken from the environment
     # in which the stack is run.
     environment:
+      - START_HARNESS=${START_HARNESS}
       - STAGE=PROD
       - LOGLEVEL=${LOGLEVEL}
       - TRAVIS_BRANCH=${TAG}
@@ -80,3 +82,7 @@ services:
 networks:
   pcp:
     external: true
+
+volumes:
+  brain-volume:
+    name: brain-volume
