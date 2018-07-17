@@ -9,8 +9,8 @@ TAG=""
 LOGLEVEL=""
 
 # Get directory info
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
+SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 
 # Prevent CRTL-C echo
@@ -20,6 +20,14 @@ stty -echoctl
 declare -a VALID_TAGS=( "dev" "qa" "latest" )
 declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
 
+# Images
+declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" )
+
+if [[ "$TAG" == "qa" ]]; then
+    images+=( "robot-framework-xvfb" )
+fi
+
+# Arg parser
 function parse_args() {
 
     ARGS=( "$@" )
@@ -115,6 +123,16 @@ function crtl_c() {
     exit 0
 }
 
+function pull_latest() {
+    for image in "${images[@]}"; do
+        echo "Attempting to pull ramrodpcp/${image}:${TAG}..."
+        docker pull ramrodpcp/$image:$TAG >> /dev/null
+        if ! [[ $? == 0 ]]; then
+            echo "Unable to pull image ${image}:${TAG}!"
+        fi
+    done
+}
+
 if ! [[ $(docker --version | grep 18.) ]]; then
     echo "Docker 18.x-ce install not detected! Exiting..."
     exit 2
@@ -132,6 +150,37 @@ if [[ "$LOGLEVEL" == "" ]]; then
     LOGLEVEL="INFO"
 fi
 
+cp /etc/hosts /etc/hosts.bak
+bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
+echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
+
+# Pull latest if available
+PS3="Attempt to pull latest images?"
+options=( "Yes" "No" "exit" )
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Yes")
+            pull_latest()
+            break
+            ;;
+        "No")
+            break
+            ;;
+        *) echo "invalid option";;
+    esac
+done
+
+# Check locally for images
+for image in "${images[@]}"; do
+    docker image inspect ramrodpcp/$image:$TAG >> /dev/null
+    if ! [[ $? == 0 ]]; then
+        echo "Unable to find image ${image}:${TAG} locally!"
+        exit
+    fi
+done
+
+# Check if Harness should be started
 START_HARNESS=""
 PS3="Start the 'Harness' plugin on stack deployment?"
 options=( "Yes" "No" "exit" )
@@ -153,29 +202,13 @@ do
     esac
 done
 
-cp /etc/hosts /etc/hosts.bak
-bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
-echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
-
-declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" )
-
-if [[ "$TAG" == "qa" ]]; then
-    images+=( "robot-framework-xvfb" )
-fi
-
-for image in "${images[@]}"; do
-    docker image inspect ramrodpcp/$image:$TAG >> /dev/null
-    if ! [[ $? == 0 ]]; then
-        echo "Unable to find image ${image}:${TAG} locally!"
-    fi
-done
-
 trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
 docker swarm init >>/dev/null
 docker network create --driver=overlay --attachable pcp >>/dev/null
 
+# Deploy stack and watch
 echo "Deploying stack..."
 mkdir $BASE_DIR/db_logs 2>>/dev/null
 START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
