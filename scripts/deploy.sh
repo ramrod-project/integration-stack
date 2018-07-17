@@ -161,7 +161,7 @@ select opt in "${options[@]}"
 do
     case $opt in
         "Yes")
-            pull_latest()
+            pull_latest
             break
             ;;
         "No")
@@ -179,6 +179,8 @@ for image in "${images[@]}"; do
         exit
     fi
 done
+
+echo ''
 
 # Check if Harness should be started
 START_HARNESS=""
