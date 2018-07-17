@@ -5,6 +5,9 @@
 # them to .tar.gz files.
 # TODO:
 
+SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
+
 PS3="Please select a release to download and export: "
 options=( "dev" "qa" "master" "exit" )
 select opt in "${options[@]}"
@@ -29,7 +32,7 @@ do
     esac
 done
 
-mkdir {exports,repos,.scripts}
+mkdir $BASE_DIR/{exports,repos,.scripts}
 
 declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "robot-framework-xvfb" "devguide-api" )
 
@@ -43,21 +46,21 @@ for img in "${images[@]}"; do
     docker pull $imagename >> /dev/null
 
     echo "Saving image to ./exports/${imagesave}.tar.gz"
-    docker save $imagename -o $imagesave.tar
-    gzip $imagesave.tar && mv $imagesave.tar.gz ./exports
+    docker save $imagename -o $BASE_DIR/$imagesave.tar
+    gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz $BASE_DIR/exports
 done
 
 for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api"; do
     echo "Cloning repository: ${repo} branch: ${selection}"
-    git clone -b $selection https://github.com/ramrod-project/$repo ./repos/$repo >> /dev/null
+    git clone -b $selection https://github.com/ramrod-project/$repo $BASE_DIR/repos/$repo >> /dev/null
     reposave=$repo-$selection-$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
     echo "Saving repo to ./exports/repo-clone-${reposave}.tar.gz"
-    tar -czvf ./exports/repo-clone-$reposave.tar.gz ./repos/$repo >> /dev/null
+    tar -czvf $BASE_DIR/exports/repo-clone-$reposave.tar.gz $BASE_DIR/repos/$repo >> /dev/null
 done
 
-cp ./repos/integration-stack/scripts/* ./.scripts/
+cp $BASE_DIR/repos/integration-stack/scripts/* $BASE_DIR/.scripts/
 
 echo "Exporting repos, images, and scripts to file ramrodpcp-exports-${selection}_${timestamp}.tar.gz..."
-tar -czvf ramrodpcp-exports-$selection-$timestamp.tar.gz ./exports ./.scripts ./docker/docker-compose.yml
+tar -czvf ramrodpcp-exports-$selection-$timestamp.tar.gz $BASE_DIR/exports $BASE_DIR/.scripts $BASE_DIR/docker/docker-compose.yml
 echo "Cleaning up..."
-rm -rf {exports,repos,.scripts}
+rm -rf $BASE_DIR/{exports,repos,.scripts}
