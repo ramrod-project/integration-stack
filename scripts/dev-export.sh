@@ -4,8 +4,8 @@
 # TODO:
 
 # Get directory info
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-BASE_DIR=$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )
+SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
 
 if ! [[ $# == 2 ]]; then
     echo "Please provide the export and plugin directories!"
@@ -84,8 +84,8 @@ echo "Context: ${SCRIPT_DIR}/docker/plugin_interpreter"
 docker build -t ramrodpcp/interpreter-plugin:$TAG --build-arg TAG=$TAG --build-arg PORTS="${PORTS}" $SCRIPT_DIR/docker/plugin_interpreter
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
-imagesave_interpreter=image-ramrodpcp-interpreter-plugin-$TAG_$timestamp
-imagesave_controller=image-ramrodpcp-backend-interpreter-$TAG_$timestamp
+imagesave_interpreter=image-ramrodpcp-interpreter-plugin-$TAG-$timestamp
+imagesave_controller=image-ramrodpcp-backend-interpreter-$TAG-$timestamp
 
 echo "Saving new image to ./${imagesave_interpreter}.tar.gz"
 docker save ramrodpcp/interpreter-plugin:$TAG -o $imagesave_interpreter.tar
