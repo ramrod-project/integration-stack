@@ -32,7 +32,7 @@ do
     esac
 done
 
-mkdir $BASE_DIR/{exports,repos,.scripts}
+mkdir ./{exports,repos,.scripts}
 
 declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "robot-framework-xvfb" "devguide-api" )
 
@@ -47,20 +47,20 @@ for img in "${images[@]}"; do
 
     echo "Saving image to ./exports/${imagesave}.tar.gz"
     docker save $imagename -o $BASE_DIR/$imagesave.tar
-    gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz $BASE_DIR/exports
+    gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz ./exports
 done
 
 for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api"; do
     echo "Cloning repository: ${repo} branch: ${selection}"
-    git clone -b $selection https://github.com/ramrod-project/$repo $BASE_DIR/repos/$repo >> /dev/null
+    git clone -b $selection https://github.com/ramrod-project/$repo ./repos/$repo >> /dev/null
     reposave=$repo-$selection-$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
     echo "Saving repo to ./exports/repo-clone-${reposave}.tar.gz"
-    tar -czvf $BASE_DIR/exports/repo-clone-$reposave.tar.gz $BASE_DIR/repos/$repo >> /dev/null
+    tar -czvf ./exports/repo-clone-$reposave.tar.gz ./repos/$repo >> /dev/null
 done
 
-cp $BASE_DIR/repos/integration-stack/scripts/* $BASE_DIR/.scripts/
+cp -r ./repos/integration-stack/scripts/* ./.scripts/
 
 echo "Exporting repos, images, and scripts to file ramrodpcp-exports-${selection}_${timestamp}.tar.gz..."
-tar -czvf ramrodpcp-exports-$selection-$timestamp.tar.gz $BASE_DIR/exports $BASE_DIR/.scripts $BASE_DIR/docker/docker-compose.yml
+tar -czvf ramrodpcp-exports-$selection-$timestamp.tar.gz ./exports ./.scripts ./docker/docker-compose.yml
 echo "Cleaning up..."
-rm -rf $BASE_DIR/{exports,repos,.scripts}
+rm -rf ./{exports,repos,.scripts}
