@@ -5,6 +5,9 @@
 # them to .tar.gz files.
 # TODO:
 
+SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
+
 PS3="Please select a release to download and export: "
 options=( "dev" "qa" "master" "exit" )
 select opt in "${options[@]}"
@@ -29,7 +32,7 @@ do
     esac
 done
 
-mkdir {exports,repos,.scripts}
+mkdir ./{exports,repos,.scripts}
 
 declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "robot-framework-xvfb" "devguide-api" )
 
@@ -43,8 +46,8 @@ for img in "${images[@]}"; do
     docker pull $imagename >> /dev/null
 
     echo "Saving image to ./exports/${imagesave}.tar.gz"
-    docker save $imagename -o $imagesave.tar
-    gzip $imagesave.tar && mv $imagesave.tar.gz ./exports
+    docker save $imagename -o $BASE_DIR/$imagesave.tar
+    gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz ./exports
 done
 
 for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api"; do
@@ -55,9 +58,9 @@ for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend
     tar -czvf ./exports/repo-clone-$reposave.tar.gz ./repos/$repo >> /dev/null
 done
 
-cp ./repos/integration-stack/scripts/* ./.scripts/
+cp -r ./repos/integration-stack/scripts/* ./.scripts/
 
 echo "Exporting repos, images, and scripts to file ramrodpcp-exports-${selection}_${timestamp}.tar.gz..."
 tar -czvf ramrodpcp-exports-$selection-$timestamp.tar.gz ./exports ./.scripts ./docker/docker-compose.yml
 echo "Cleaning up..."
-rm -rf {exports,repos,.scripts}
+rm -rf ./{exports,repos,.scripts}
