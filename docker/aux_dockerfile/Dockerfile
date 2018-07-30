@@ -15,6 +15,7 @@ RUN apk add python3 && \
 
 RUN pip3 install fusepy
 
+RUN pip3 install flask
 
 # Configure openrc
 RUN mkdir /run/openrc && \
@@ -41,6 +42,8 @@ RUN adduser -D -g 'fff' fff && \
 COPY ./config/run.sh /run.sh
 
 COPY ./config/brain_filesystem.py /brain_filesystem.py
+
+COPY ./config/upload/uploads.py /uploads.py
 
 EXPOSE 20 21 80 10090-10100
 

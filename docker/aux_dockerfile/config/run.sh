@@ -1,5 +1,7 @@
 #!/bin/bash
 
+watch python3 uploads.py &
+
 # start nginx
 su www -c "python3 /brain_filesystem.py /www/files" &
 sleep 2
