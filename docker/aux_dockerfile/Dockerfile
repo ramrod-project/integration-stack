@@ -5,6 +5,17 @@ RUN apk update && \
     vsftpd==3.0.3-r4 unbound==1.6.7-r1 \
     nginx==1.12.2-r3
 
+
+RUN apk add fuse
+
+RUN apk add python3 && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade ramrodbrain
+
+RUN pip3 install fusepy
+
+
 # Configure openrc
 RUN mkdir /run/openrc && \
     touch /run/openrc/softlevel
@@ -22,7 +33,14 @@ COPY ./config/nginx/index.html /www/index.html
 # Set up vsftpd
 COPY ./config/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf
 
+RUN adduser -D -g 'fff' fff && \
+    mkdir /home/fff/files && \
+    chown fff /home/fff/files && \
+    chmod a-w /home/fff/
+
 COPY ./config/run.sh /run.sh
+
+COPY ./config/brain_filesystem.py /brain_filesystem.py
 
 EXPOSE 20 21 80 10090-10100
 
