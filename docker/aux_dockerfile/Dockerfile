@@ -8,6 +8,8 @@ RUN apk update && \
 
 RUN apk add fuse
 
+RUN apk add libmagic
+
 RUN apk add python3 && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
