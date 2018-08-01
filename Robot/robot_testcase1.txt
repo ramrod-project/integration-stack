@@ -23,7 +23,6 @@ Page Content Check
 	Page Should Contain Button    addjob_button
 	Page Should Contain Button    execute_button	
 	Page Should Contain Element    user_search_hide_id
-	Page Should Contain Element    tab1
 	Page Should Contain Element    tab_2
 	Page Should Contain Element    tab_3
 	Page Should Contain Element    tab_4
