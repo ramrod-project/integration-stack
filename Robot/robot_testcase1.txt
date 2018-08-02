@@ -97,7 +97,8 @@ Delete Job
     
 Delete Target
     Click Element    edit_target_id
-    Select Window    url=http://frontend:8080/new_target_form/*/
+    Sleep    10
+    Select Window    new    
     Location Should Contain    edit_target_form
 
 
