@@ -23,11 +23,8 @@ Page Content Check
 	Page Should Contain Button    addjob_button
 	Page Should Contain Button    execute_button	
 	Page Should Contain Element    user_search_hide_id
-	Page Should Contain Element    tab1
 	Page Should Contain Element    tab_2
 	Page Should Contain Element    tab_3
-	Page Should Contain Element    tab_4
-	Page Should Contain Element    tab_5
     Page Should Contain Element    boxtwofooterid
     Page Should Contain Element    example3_wrapper
 	Page Should Contain Element    third_box_content
@@ -89,10 +86,20 @@ Add Job
     Element Should Contain    pluginid1    Harness
     Page Should Contain Element    updateid1
     Element Should Contain    updateid1    terminal1
+    
+Add Command
+    Click Element    name_tag_id0
+    Wait Until Page Contains Element    commandid
 
 Delete Job
     Click Button     clear_seq_buttonid
     Element Should Not Contain    pluginid1    Harness
+    
+Delete Target
+    Click Element    edit_target_id
+    Sleep    10
+    Select Window    new    
+    Location Should Contain    edit_target_form
 
 
 

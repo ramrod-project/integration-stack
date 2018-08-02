@@ -207,7 +207,14 @@ done
 trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
-docker swarm init >>/dev/null
+read -p 'Enter the IP address to listen on: ' STACK_IP
+
+# Initialize swarm
+docker swarm init --listen-addr $STACK_IP:2377 --advertise-addr $STACK_IP
+if ! [[ $? == 0 ]]; then
+    echo "host already part of swarm! Use join token:"
+    docker swarm join-token manager -q
+fi 
 docker network create --driver=overlay --attachable pcp >>/dev/null
 
 # Deploy stack and watch
