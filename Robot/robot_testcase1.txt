@@ -86,10 +86,19 @@ Add Job
     Element Should Contain    pluginid1    Harness
     Page Should Contain Element    updateid1
     Element Should Contain    updateid1    terminal1
+    
+Add Command
+    Click Element    name_tag_id0
+    Wait Until Page Contains Element    commandid
 
 Delete Job
     Click Button     clear_seq_buttonid
     Element Should Not Contain    pluginid1    Harness
+    
+Delete Target
+    Click Element    edit_target_id
+    Select Window    new
+    Location Should Contain    edit_target_form
 
 
 
