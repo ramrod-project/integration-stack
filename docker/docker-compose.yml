@@ -53,6 +53,8 @@ services:
       pcp:
         aliases:
           - rethinkdb
+    ports:
+      - 28015:28015
     volumes:
       - '${LOGDIR}/db_logs:/logs'
       - brain-volume:/mnt/fuse
