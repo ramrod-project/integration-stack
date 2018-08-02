@@ -98,6 +98,7 @@ Delete Job
 Delete Target
     Click Element    edit_target_id
     Select Window    new
+    Sleep    10
     Location Should Contain    edit_target_form
 
 
