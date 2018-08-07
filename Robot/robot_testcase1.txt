@@ -83,7 +83,7 @@ Add Job
     Page Should Contain Element    add_job_sc_id0
     Click Element    add_job_sc_id0
     Page Should Contain Element    outq_content
-    Element Should Contain    pluginid1    Harness
+    Element Should Contain    pluginid1    Harness:5000
     Page Should Contain Element    updateid1
     Element Should Contain    updateid1    terminal1
     
