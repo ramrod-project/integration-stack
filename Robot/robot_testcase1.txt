@@ -79,7 +79,7 @@ Search Box
 Add Job
     Wait until page contains element    target_table
     Element Should Contain    target_table    Harness
-    Element Should Contain    target_table    192.168.1.1
+    Element Should Contain    target_table    192.168.1.1:5000
     Page Should Contain Element    add_job_sc_id0
     Click Element    add_job_sc_id0
     Page Should Contain Element    outq_content
