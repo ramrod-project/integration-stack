@@ -60,7 +60,7 @@ Execute Empty Sequence
 	
 Add Target
     Click Element    add_target_id
-	Wait Until Page Contains Element    plugin_name
+	Wait Until Page Contains Element    plugin_name    15
 	Input Text    plugin_name    Harness
 	Input Text    location_num    192.168.1.1
 	Input Text    port_num    5000
