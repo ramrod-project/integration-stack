@@ -60,12 +60,17 @@ Execute Empty Sequence
 	
 Add Target
     Click Element    add_target_id
-	Page Should Contain    New Target Form
-	Input Text    plugin_name    Harness
-	Input Text    location_num    192.168.1.1
-	Input Text    port_num    5000
-	Input Text    optional_char    blahblah
-	Press Key     optional_char    \\13
+    Wait Until Page Contains    New Target Form
+    Click Element    plugin_name    
+    Press Key    plugin_name    \\72
+    Sleep    2
+    Press Key    plugin_name    \\13
+    Press Key    plugin_name    \\9
+    Element Should Contain    plugin_name    Harness
+    Input Text    location_num    192.168.1.1
+    Input Text    port_num    5000
+    Input Text    optional_char    blahblah
+    Press Key     optional_char    \\13
 
 Search Box
     Wait until element is visible    searchNameHere
@@ -83,7 +88,7 @@ Add Job
     Page Should Contain Element    add_job_sc_id0
     Click Element    add_job_sc_id0
     Page Should Contain Element    outq_content
-    Element Should Contain    pluginid1    Harness
+    Element Should Contain    pluginid1    Harness:5000
     Page Should Contain Element    updateid1
     Element Should Contain    updateid1    terminal1
     

@@ -2,3 +2,4 @@ exports*
 repos*
 *.tar.gz
 db_logs*
+plugins*
