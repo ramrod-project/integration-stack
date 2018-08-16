@@ -34,7 +34,7 @@ done
 
 mkdir ./{exports,repos,.scripts}
 
-declare -a images=( "backend-interpreter" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "robot-framework-xvfb" "devguide-api" )
+declare -a images=( "backend-controller" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "auxiliary-wrapper" "robot-framework-xvfb" "devguide-api" )
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
 
@@ -50,7 +50,7 @@ for img in "${images[@]}"; do
     gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz ./exports
 done
 
-for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api"; do
+for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api" "aux-service-service"; do
     echo "Cloning repository: ${repo} branch: ${selection}"
     git clone -b $selection https://github.com/ramrod-project/$repo ./repos/$repo >> /dev/null
     reposave=$repo-$selection-$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )

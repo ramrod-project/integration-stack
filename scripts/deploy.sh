@@ -21,7 +21,7 @@ declare -a VALID_TAGS=( "dev" "qa" "latest" )
 declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
 
 # Images
-declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" )
+declare -a images=( "database-brain" "backend-controller" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper")
 
 if [[ "$TAG" == "qa" ]]; then
     images+=( "robot-framework-xvfb" )
