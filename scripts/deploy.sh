@@ -21,7 +21,7 @@ declare -a VALID_TAGS=( "dev" "qa" "latest" )
 declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
 
 # Images
-declare -a images=( "database-brain" "backend-interpreter" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" )
+declare -a images=( "database-brain" "backend-controller" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper")
 
 if [[ "$TAG" == "qa" ]]; then
     images+=( "robot-framework-xvfb" )
@@ -204,6 +204,28 @@ do
     esac
 done
 
+# Check if Harness should be started
+START_AUX=""
+PS3="Start the Aux services plugin on stack deployment?"
+options=( "Yes" "No" "exit" )
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Yes")
+            START_AUX="YES"
+            break
+            ;;
+        "No")
+            START_AUX="NO"
+            break
+            ;;
+        "exit")
+            exit
+            ;;
+        *) echo "invalid option";;
+    esac
+done
+
 trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
@@ -220,7 +242,7 @@ docker network create --driver=overlay --attachable pcp >>/dev/null
 # Deploy stack and watch
 echo "Deploying stack..."
 mkdir $BASE_DIR/db_logs 2>>/dev/null
-START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
+START_AUX=$START_AUX START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
 
 echo "You can reach the frontend from this machine at 'http://frontend:8080'."
 echo "If you need to access from another machine or VM host, \
