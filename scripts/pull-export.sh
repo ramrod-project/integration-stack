@@ -50,7 +50,7 @@ for img in "${images[@]}"; do
     gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz ./exports
 done
 
-for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api" "aux-service-service"; do
+for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api" "aux-services-service"; do
     echo "Cloning repository: ${repo} branch: ${selection}"
     git clone -b $selection https://github.com/ramrod-project/$repo ./repos/$repo >> /dev/null
     reposave=$repo-$selection-$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
