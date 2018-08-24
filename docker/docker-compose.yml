@@ -60,7 +60,7 @@ services:
       - brain-volume:/mnt/fuse
   # Config information for the backend container service
   backend:
-    image: ramrodpcp/backend-interpreter:${TAG}
+    image: ramrodpcp/backend-controller:${TAG}
     deploy:
       restart_policy:
         condition: on-failure
@@ -73,9 +73,10 @@ services:
     # in which the stack is run.
     environment:
       - START_HARNESS=${START_HARNESS}
+      - START_AUX=${START_AUX}
       - STAGE=PROD
       - LOGLEVEL=${LOGLEVEL}
-      - TRAVIS_BRANCH=${TAG}
+      - TAG=${TAG}
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
 

@@ -1,6 +1,6 @@
 ARG MANIFEST
 ARG TAG=latest
 
-FROM ramrodpcp/backend-interpreter:${TAG}
+FROM ramrodpcp/backend-controller:${TAG}
 
-COPY ${MANIFEST} /opt/app-root/src/
+COPY ${MANIFEST} .

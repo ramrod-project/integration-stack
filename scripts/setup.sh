@@ -25,7 +25,7 @@ done < <(find $1 -name "*image-*" -print0)
 
 # Purge existing images
 docker images | grep ramrodpcp | awk '{print $3}' | xargs docker rmi -f
-docker images prune -f
+docker images prune
 
 # Load images
 for img in "${images[@]}"; do

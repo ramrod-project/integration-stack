@@ -42,10 +42,11 @@ RUN adduser -D -g 'fff' fff && \
     chmod a-w /home/fff/
 
 COPY ./config/run.sh /run.sh
-
 COPY ./config/brain_filesystem.py /brain_filesystem.py
-
 COPY ./config/upload/uploads.py /uploads.py
+COPY ./healthcheck.sh .
+
+HEALTHCHECK --interval=2s --start-period=10s --retries=3 CMD /bin/sh ./healthcheck.sh
 
 EXPOSE 20 21 80 10090-10100
 
