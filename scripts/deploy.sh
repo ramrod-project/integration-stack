@@ -23,6 +23,11 @@ declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
 # Images
 declare -a images=( "database-brain" "backend-controller" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper")
 
+if ! [[ $(whoami) == "root" ]]; then
+    echo "Please run script as sudo!"
+    exit 1
+fi
+
 if [[ "$TAG" == "qa" ]]; then
     images+=( "robot-framework-xvfb" )
 fi
@@ -114,7 +119,7 @@ function crtl_c() {
     echo "Tearing down stack..."
     docker stack rm pcp-test 2>&1 >>/dev/null
     echo "Removing leftover services..."
-    docker service ls | grep -v ID | awk '{print $1}' | xargs docker service rm
+    docker service ls | grep -v ID | awk '{print $1}' | xargs docker service rm 2>&1 1>>/dev/null
     echo "Removing leftover containers..."
     docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null'
     docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
@@ -124,8 +129,6 @@ function crtl_c() {
     sudo cp /etc/hosts.bak /etc/hosts
     exit 0
 }
-
-docker logout
 
 function pull_latest() {
     for image in "${images[@]}"; do
@@ -154,9 +157,18 @@ if [[ "$LOGLEVEL" == "" ]]; then
     LOGLEVEL="INFO"
 fi
 
-cp /etc/hosts /etc/hosts.bak
-bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
-echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
+cp /etc/hosts /etc/hosts.bak 2>&1 1>>/dev/null
+sed -i 's/^.*frontend$//g' /etc/hosts 2>&1 1>>/dev/null
+bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts" 2>&1 1>>/dev/null
+if ! [[ $? == 0 ]]; then
+    echo "Could not add ${DOCKER_IP} to host file! Did you run as sudo?"
+    exit 1
+else
+    echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
+fi
+
+# Avoid weird error
+docker logout 2>&1 1>>/dev/null
 
 # Pull latest if available
 PS3="Attempt to pull latest images?"
@@ -243,7 +255,7 @@ else
 fi
 
 if [[ $(docker network inspect pcp) ]]; then
-    docker network create --driver=overlay --attachable pcp >>/dev/null
+    docker network create --driver=overlay --attachable pcp 2>&1 1>>/dev/null
 fi
 
 # Trap signals
@@ -252,15 +264,14 @@ trap ctrl_c SIGTSTP
 
 # Deploy stack and watch
 echo "Deploying stack..."
-mkdir $BASE_DIR/db_logs 2>>/dev/null
-START_AUX=$START_AUX START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test >> /dev/null
+mkdir $BASE_DIR/db_logs 2>&1 1>>/dev/null
+START_AUX=$START_AUX START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test 2>&1 1>>/dev/null
 
 echo "You can reach the frontend from this machine at 'http://frontend:8080'."
 echo "If you need to access from another machine or VM host, \
 be sure to add this machine's IP to the hostfile as 'frontend'"
 echo "Running stack, press <CRTL-C> to stop..."
-sleep 2
-watch -d docker stack ps pcp-test
+watch -d docker service ls
 while true; do
     sleep 1
 done
