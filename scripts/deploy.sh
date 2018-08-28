@@ -113,6 +113,8 @@ function validate_loglevel() {
 function crtl_c() {
     echo "Tearing down stack..."
     docker stack rm pcp-test 2>&1 >>/dev/null
+    echo "Removing leftover services..."
+    docker service ls | grep -v ID | awk '{print $1}' | xargs docker service rm
     echo "Removing leftover containers..."
     docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null'
     docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
@@ -123,10 +125,12 @@ function crtl_c() {
     exit 0
 }
 
+docker logout
+
 function pull_latest() {
     for image in "${images[@]}"; do
         echo "Attempting to pull ramrodpcp/${image}:${TAG}..."
-        docker pull ramrodpcp/$image:$TAG >> /dev/null
+        docker pull ramrodpcp/$image:$TAG
         if ! [[ $? == 0 ]]; then
             echo "Unable to pull image ${image}:${TAG}!"
         fi
@@ -226,18 +230,25 @@ do
     esac
 done
 
+# Initialize swarm
+if [[ $(docker node inspect $(hostname) --format='{{.ManagerStatus.Leader}}') == true ]]; then
+    if [[ $(ifconfig | grep $(docker node inspect $(hostname) --format='{{.ManagerStatus.Addr}}' | sed 's/:.*//g')) ]]; then
+        echo "host already part of swarm! Use join token:"
+        docker swarm join-token manager -q
+    fi
+else
+    docker swarm leave --force 2>&1 1>>/dev/null
+    read -p 'Enter the IP address to listen on: ' STACK_IP
+    docker swarm init --listen-addr $STACK_IP:2377 --advertise-addr $STACK_IP
+fi
+
+if [[ $(docker network inspect pcp) ]]; then
+    docker network create --driver=overlay --attachable pcp >>/dev/null
+fi
+
+# Trap signals
 trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
-
-read -p 'Enter the IP address to listen on: ' STACK_IP
-
-# Initialize swarm
-docker swarm init --listen-addr $STACK_IP:2377 --advertise-addr $STACK_IP
-if ! [[ $? == 0 ]]; then
-    echo "host already part of swarm! Use join token:"
-    docker swarm join-token manager -q
-fi 
-docker network create --driver=overlay --attachable pcp >>/dev/null
 
 # Deploy stack and watch
 echo "Deploying stack..."
