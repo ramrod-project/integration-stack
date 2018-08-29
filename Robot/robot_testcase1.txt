@@ -61,7 +61,9 @@ Execute Empty Sequence
 Add Target
     Click Element    add_target_id
     Wait Until Page Contains    New Target Form
-    Click Element    plugin_name    
+    Wait Until Page Contains Element    plugin_name
+    Click Element    plugin_name
+    Wait Until Element Contains    plugin_name    Harness
     Press Key    plugin_name    \\72
     Sleep    2
     Press Key    plugin_name    \\13
