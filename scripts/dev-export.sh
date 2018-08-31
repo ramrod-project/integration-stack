@@ -53,7 +53,7 @@ do
     esac
 done
 
-declare -a images=( "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" )
+declare -a images=( "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper" )
 
 exportimages=()
 
