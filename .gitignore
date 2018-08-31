@@ -4,3 +4,4 @@ repos*
 db_logs*
 plugins*
 .scripts*
+venv*
