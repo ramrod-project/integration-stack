@@ -38,7 +38,6 @@ before_install:
 
 # Second step, install required dependencies.
 install:
-  - docker build -t ramrodpcp/auxiliary-services:$TAG ./docker/aux_dockerfile/
   - export LOGLEVEL=DEBUG
   - docker pull ramrodpcp/frontend-ui:$TAG
   - docker pull ramrodpcp/database-brain:$TAG
@@ -67,10 +66,6 @@ script:
 after_success:
   - docker stack rm test-stack
   - docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs docker stop
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; 
-    then echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; fi
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false"  ]]; 
-    then docker push ramrodpcp/auxiliary-services:$TAG; fi
 
 notifications:
   slack: ramrod-project:GDF82rRYDg3KSekrT3GA24qO
