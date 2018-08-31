@@ -11,7 +11,7 @@ def linharn_client():
     """Generates and runs a Harness plugin thread
     connecting to 127.0.0.1:5000
     """
-    client_thread = multiprocessing.Process(target=control_loop)
+    client_thread = multiprocessing.Process(target=control_loop, args=("C_127.0.0.1_1",))
     client_thread.start()
     yield client_thread
     client_thread.terminate()
@@ -23,7 +23,7 @@ def test_instantiate(linharn_client):
     opts = Options()
     opts.set_headless()
     assert opts.headless  # Operating in headless mode
-    browser = Firefox(Options=opts)
+    browser = Firefox(options=opts)
     browser.get("http://frontend:8080")
 
     # test cases
@@ -38,7 +38,7 @@ def test_instantiate(linharn_client):
     plgn_opt.click()
     plgn.send_keys(Keys.ENTER)
 
-    tgt_ip - browser.find_element_by_id('location_num').send_keys('127.0.0.1')
+    tgt_ip = browser.find_element_by_id('location_num').send_keys('127.0.0.1')
 
     tgt_port = browser.find_element_by_id('port_num')
     tgt_port.send_keys('5000')

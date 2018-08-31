@@ -1,3 +1,4 @@
 {
-  "e2e.py::test_instantiate": true
+  "e2e.py::test_instantiate": true,
+  "linharn/e2e.py::test_instantiate": true
 }

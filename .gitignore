@@ -6,3 +6,4 @@ plugins*
 .scripts*
 venv*
 *__pycache__*
+geckodriver*

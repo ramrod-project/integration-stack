@@ -34,7 +34,8 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - git clone https://github.com/ramrod-project/integration-stack
+  - apt-get install geckodriver
+  - echo "frontend  127.0.0.1" >> /etc/hosts
 
 # Second step, install required dependencies.
 install:
@@ -55,13 +56,14 @@ before_script:
   - docker network create --driver=overlay --attachable pcp
   - mkdir db_logs 2>&1 >>/dev/null
   - START_HARNESS=YES START_AUX=YES TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
-  - sleep 15
+  - sleep 30
   - docker stack ps pcp-test --no-trunc
   - docker ps -a
 
 # Fourth step, test away!
 script:
-  - docker run -t --rm --network pcp -v `pwd`/Robot:/opt/robotframework/tests ramrodpcp/robot-framework-xvfb:$TAG
+  - pip install -r linharn/requirements.txt
+  - pytest linharn/e2e.py
 
 # Cleanup, housekeeping
 after_success:
