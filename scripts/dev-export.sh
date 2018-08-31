@@ -53,9 +53,7 @@ do
     esac
 done
 
-read -p 'Please the ports needed by your plugin(s) separated by a space: ' PORTS
-
-declare -a images=( "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" )
+declare -a images=( "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper" )
 
 exportimages=()
 
@@ -74,9 +72,9 @@ python3 $SCRIPT_DIR/manifest.py $PLUGINS_DIR
 mv ./manifest.json $SCRIPT_DIR/docker/plugin_controller
 
 # Build new controller image
-echo "Building new ramrodpcp/backend-interpreter:${TAG} image..."
+echo "Building new ramrodpcp/backend-controller:${TAG} image..."
 echo "Context: ${SCRIPT_DIR}/docker/plugin_controller"
-docker build -t ramrodpcp/backend-interpreter:$TAG --build-arg TAG=$TAG --build-arg MANIFEST=./manifest.json $SCRIPT_DIR/docker/plugin_controller
+docker build -t ramrodpcp/backend-controller:$TAG --build-arg TAG=$TAG --build-arg MANIFEST=./manifest.json $SCRIPT_DIR/docker/plugin_controller
 
 # Build new interpreter image
 echo "Building new ramrodpcp/interpreter-plugin:${TAG} image..."
@@ -85,14 +83,14 @@ docker build -t ramrodpcp/interpreter-plugin:$TAG --build-arg TAG=$TAG --build-a
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
 imagesave_interpreter=image-ramrodpcp-interpreter-plugin-$TAG-$timestamp
-imagesave_controller=image-ramrodpcp-backend-interpreter-$TAG-$timestamp
+imagesave_controller=image-ramrodpcp-backend-controller-$TAG-$timestamp
 
 echo "Saving new image to ./${imagesave_interpreter}.tar.gz"
 docker save ramrodpcp/interpreter-plugin:$TAG -o $imagesave_interpreter.tar
 gzip $imagesave_interpreter.tar && mv $imagesave_interpreter.tar.gz $EXPORTS_DIR
 
 echo "Saving new image to ./${imagesave_controller}.tar.gz"
-docker save ramrodpcp/backend-interpreter:$TAG -o $imagesave_controller.tar
+docker save ramrodpcp/backend-controller:$TAG -o $imagesave_controller.tar
 gzip $imagesave_controller.tar && mv $imagesave_controller.tar.gz $EXPORTS_DIR
 
 tar -cvf ramrod-deployment-package-$TAG-$timestamp.tar $EXPORTS_DIR/$imagesave_interpreter.tar.gz $EXPORTS_DIR/$imagesave_controller.tar.gz ./.scripts/setup.sh ./.scripts/deploy.sh ./docker/docker-compose.yml

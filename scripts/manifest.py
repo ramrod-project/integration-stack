@@ -3,6 +3,12 @@ from json import dump, load
 from os import listdir, path
 from sys import argv, stderr
 
+OS_MAP = {
+    "1": "nt",
+    "2": "posix",
+    "3": "all"
+}
+
 
 def get_plugins(directory):
     plugin_names = []
@@ -34,10 +40,23 @@ def main():
     if not path.isdir(argv[1]):
         stderr.write("Plugins directory not provided or not found!\n")
         exit(2)
+    
     plugins = get_plugins(argv[1])
     manifest = []
-    for plugin in plugins:
-        manifest.append({"Name": plugin})
+
+    i = 0
+    while i < len(plugins):
+        print("Which operating system does plugin {} support?\n".format(plugins[i]))
+        print("\t1) Windows\n\t2) Linux\n\t3) All\n")
+        os = input("Selection:")
+        if os not in ["1", "2", "3"]:
+            print("Please enter 1,2, or 3\n")
+            continue
+        manifest.append({
+            "Name": plugins[i],
+            "OS": OS_MAP[os]
+        })
+        i += 1
     destination_filename = "./manifest.json"
     with open(destination_filename, "w") as outfile:
         print("Writing manifest: {} to file: {}".format(
