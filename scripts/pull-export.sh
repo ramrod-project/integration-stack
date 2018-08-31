@@ -34,7 +34,7 @@ done
 
 mkdir ./{exports,repos,.scripts}
 
-declare -a images=( "backend-controller" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "auxiliary-wrapper" "robot-framework-xvfb" "devguide-api" )
+declare -a images=( "backend-controller" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "auxiliary-wrapper" "devguide-api" )
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
 
