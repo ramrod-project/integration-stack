@@ -243,8 +243,8 @@ do
 done
 
 # Initialize swarm
-if [[ $(docker node inspect $(hostname) --format='{{.ManagerStatus.Leader}}') == true ]]; then
-    if [[ $(ifconfig | grep $(docker node inspect $(hostname) --format='{{.ManagerStatus.Addr}}' | sed 's/:.*//g')) ]]; then
+if [[ $(docker node inspect $(hostname) --format='{{.ManagerStatus.Leader}}'  2>&1) == true ]]; then
+    if [[ $(ifconfig | grep $(docker node inspect $(hostname) --format='{{.ManagerStatus.Addr}} 2>&1' | sed 's/:.*//g')) ]]; then
         echo "host already part of swarm! Use join token:"
         docker swarm join-token manager -q
     fi
@@ -254,7 +254,7 @@ else
     docker swarm init --listen-addr $STACK_IP:2377 --advertise-addr $STACK_IP
 fi
 
-if [[ $(docker network inspect pcp) ]]; then
+if ! [[ $(docker network ls | grep pcp) ]]; then
     docker network create --driver=overlay --attachable pcp 2>&1 1>>/dev/null
 fi
 
@@ -264,7 +264,8 @@ trap ctrl_c SIGTSTP
 
 # Deploy stack and watch
 echo "Deploying stack..."
-mkdir $BASE_DIR/db_logs 2>&1 1>>/dev/null
+rm -rf $BASE_DIR/db_logs
+mkdir $BASE_DIR/db_logs
 START_AUX=$START_AUX START_HARNESS=$START_HARNESS TAG=$TAG LOGLEVEL=$LOGLEVEL LOGDIR=$BASE_DIR docker stack deploy -c $BASE_DIR/docker/docker-compose.yml pcp-test 2>&1 1>>/dev/null
 
 echo "You can reach the frontend from this machine at 'http://frontend:8080'."
