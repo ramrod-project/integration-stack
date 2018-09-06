@@ -38,10 +38,13 @@ before_install:
   - tar -xvzf geckodriver*
   - sudo chmod +x geckodriver
   - export PATH=$PATH:/path-to-extracted-file/geckodriver
-  - sudo bash -c "echo \"127.0.0.1     frontend\" >> /etc/hosts"
+  - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
+  - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
 # Second step, install required dependencies.
 install:
+  - echo $PATH
+  - cat /etc/hosts
   - docker build -t ramrodpcp/auxiliary-services:$TAG ./docker/aux_dockerfile/
   - export LOGLEVEL=DEBUG
   - docker pull ramrodpcp/frontend-ui:$TAG
