@@ -38,7 +38,7 @@ before_install:
   - tar -xvzf geckodriver*
   - sudo chmod +x geckodriver
   - export PATH=$PATH:/path-to-extracted-file/geckodriver
-  - sudo echo "frontend  127.0.0.1" >> /etc/hosts
+  - sudo bash -c "echo \"127.0.0.1     frontend\" >> /etc/hosts"
 
 # Second step, install required dependencies.
 install:
