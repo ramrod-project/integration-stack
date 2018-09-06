@@ -38,6 +38,10 @@ before_install:
   - sudo apt-add-repository -y ppa:mozillateam/firefox-next
   - sudo apt-get update
   - sudo apt-get install firefox xvfb
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+  - tar -xvzf geckodriver*
+  - sudo chmod +x geckodriver
+  - export PATH=$PATH:`pwd`
   - Xvfb :10 -ac &
   - export DISPLAY=:10
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
