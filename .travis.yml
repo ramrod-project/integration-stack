@@ -21,12 +21,6 @@ branches:
   - dev
   - qa
 
-env:
-  - MOZ_HEADLESS=1
-
-addons:
-  firefox: latest
-
 # The following are the pipeline stages. They
 # are executed in order inside of a VM in a bash
 # shell, (thus they use bash syntax).
@@ -40,12 +34,19 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - export LOGLEVEL=DEBUG
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+  - wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
+  - mkdir drivers
+  - tar -xvzf geckodriver* -C ./drivers
+  - unzip chromedriver* -d ./drivers
+  - sudo chmod +x ./drivers/{geckodriver,chromedriver}
+  - export PATH=$PATH:`pwd`/drivers
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
   - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
 # Second step, install required dependencies.
 install:
+  - export LOGLEVEL=DEBUG
   - docker pull ramrodpcp/frontend-ui:$TAG
   - docker pull ramrodpcp/database-brain:$TAG
   - docker pull ramrodpcp/backend-controller:$TAG

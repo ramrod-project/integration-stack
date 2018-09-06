@@ -21,11 +21,9 @@ def test_instantiate(linharn_client):
     """Test something...
     """
 
-    opts = Options()
-    opts.set_headless()
-    assert opts.headless  # Operating in headless mode
-
-    browser = Firefox(options=opts)
+    options = Options()
+    options.add_argument('-headless')
+    browser = Firefox(executable_path='geckodriver', firefox_options=options)
     browser.implicitly_wait(20)
 
     browser.get("http://frontend:8080")
