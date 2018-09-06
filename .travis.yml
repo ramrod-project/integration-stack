@@ -21,6 +21,12 @@ branches:
   - dev
   - qa
 
+env:
+  - MOZ_HEADLESS=1
+
+addons:
+  firefox: latest
+
 # The following are the pipeline stages. They
 # are executed in order inside of a VM in a bash
 # shell, (thus they use bash syntax).
@@ -35,15 +41,6 @@ before_install:
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
   - export LOGLEVEL=DEBUG
-  - sudo apt-add-repository -y ppa:mozillateam/firefox-next
-  - sudo apt-get update
-  - sudo apt-get install firefox xvfb
-  - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
-  - tar -xvzf geckodriver*
-  - sudo chmod +x geckodriver
-  - export PATH=$PATH:`pwd`
-  - Xvfb :10 -ac &
-  - export DISPLAY=:10
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
   - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
