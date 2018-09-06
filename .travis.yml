@@ -43,7 +43,6 @@ before_install:
 
 # Second step, install required dependencies.
 install:
-  - docker build -t ramrodpcp/auxiliary-services:$TAG ./docker/aux_dockerfile/
   - export LOGLEVEL=DEBUG
   - docker pull ramrodpcp/frontend-ui:$TAG
   - docker pull ramrodpcp/database-brain:$TAG
