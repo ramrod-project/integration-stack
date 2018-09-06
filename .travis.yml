@@ -34,8 +34,8 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - apt-get install geckodriver
-  - echo "frontend  127.0.0.1" >> /etc/hosts
+  - sudo apt-get install geckodriver
+  - sudo echo "frontend  127.0.0.1" >> /etc/hosts
 
 # Second step, install required dependencies.
 install:
