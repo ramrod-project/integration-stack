@@ -7,3 +7,4 @@ plugins*
 venv*
 *__pycache__*
 geckodriver*
+.pytest_cache/*

@@ -26,33 +26,17 @@ def test_instantiate(linharn_client):
     browser = Firefox(options=opts)
     browser.get("http://frontend:8080")
 
-    # test cases
+    # Add a target
 
     add_tgt = browser.find_element_by_id('add_target_id')
     add_tgt.click()
 
-    plgn = browser.find_element_by_id('plugin_name')
+    plgn = browser.find_element_by_id('service_name')
     plgn.click()
     plgn.send_keys('h')
-    plgn_opt = browser.find_element_by_id('1')
-    plgn_opt.click()
     plgn.send_keys(Keys.ENTER)
 
-    tgt_ip = browser.find_element_by_id('location_num').send_keys('127.0.0.1')
+    browser.find_element_by_id('location_num').send_keys('127.0.0.1')
 
-    tgt_port = browser.find_element_by_id('port_num')
-    tgt_port.send_keys('5000')
-    tgt_port.send_keys(Keys.ENTER)
-
-    tgt_name = browser.find_element_by_id('name_tag_id1')
-    tgt_name.click()
-
-    tgt_ip = browser.find_element_by_id('address_tag_id1')
-
-    add_job = browser.find_element_by_id('add_job_sc_id1')
-    add_job.click()
-
-    browser.implicitly_wait(10)
-
-    cmd_name = browser.find_element_by_id('acommandid6')
-    cmd_name.click()
+    submit = browser.find_element_by_id('add_target_submit')
+    submit.click()
