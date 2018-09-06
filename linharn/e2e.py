@@ -1,8 +1,10 @@
+import multiprocessing
+
 from pytest import fixture, raises
+from pyvirtualdisplay import Display
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
-import multiprocessing
 
 from .linharn import control_loop
 
@@ -21,6 +23,11 @@ def test_instantiate(linharn_client):
     """Test something...
     """
 
+    # Start virtual display
+    display = Display(visible=0, size=(1920, 1080))
+    display.start()
+
+    # Start firefox browser using the virtual display
     browser = Firefox()
     browser.implicitly_wait(20)
 

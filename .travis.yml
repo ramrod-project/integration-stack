@@ -69,7 +69,7 @@ before_script:
 # Fourth step, test away!
 script:
   - pip install -r linharn/requirements.txt
-  - xvfb-run pytest linharn/e2e.py
+  - pytest linharn/e2e.py
 
 # Cleanup, housekeeping
 after_success:
