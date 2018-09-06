@@ -35,7 +35,7 @@ before_install:
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
   - export LOGLEVEL=DEBUG
-  - sudo apt-add-repository ppa:mozillateam/firefox-next
+  - sudo apt-add-repository -y ppa:mozillateam/firefox-next
   - sudo apt-get update
   - sudo apt-get install firefox xvfb
   - Xvfb :10 -ac &
