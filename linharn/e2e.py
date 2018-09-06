@@ -6,6 +6,7 @@ import multiprocessing
 
 from .linharn import control_loop
 
+
 @fixture(scope="function")
 def linharn_client():
     """Generates and runs a Harness plugin thread
@@ -23,7 +24,10 @@ def test_instantiate(linharn_client):
     opts = Options()
     opts.set_headless()
     assert opts.headless  # Operating in headless mode
+
     browser = Firefox(options=opts)
+    browser.implicitly_wait(20)
+
     browser.get("http://frontend:8080")
 
     # Add a target
