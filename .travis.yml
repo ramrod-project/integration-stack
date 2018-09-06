@@ -21,6 +21,9 @@ branches:
   - dev
   - qa
 
+addons:
+  chrome: stable
+
 # The following are the pipeline stages. They
 # are executed in order inside of a VM in a bash
 # shell, (thus they use bash syntax).
@@ -68,6 +71,7 @@ before_script:
 
 # Fourth step, test away!
 script:
+  # - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://frontend:8080
   - pip install -r linharn/requirements.txt
   - pytest linharn/e2e.py
 
