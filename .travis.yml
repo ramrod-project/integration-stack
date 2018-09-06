@@ -41,6 +41,9 @@ before_install:
   - unzip chromedriver* -d ./drivers
   - sudo chmod +x ./drivers/{geckodriver,chromedriver}
   - export PATH=$PATH:`pwd`/drivers
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
   - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
