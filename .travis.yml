@@ -34,7 +34,10 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - sudo apt-get install geckodriver
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+  - tar -xvzf geckodriver*
+  - sudo chmod +x geckodriver
+  - export PATH=$PATH:/path-to-extracted-file/geckodriver
   - sudo echo "frontend  127.0.0.1" >> /etc/hosts
 
 # Second step, install required dependencies.
