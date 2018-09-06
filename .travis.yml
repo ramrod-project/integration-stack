@@ -37,7 +37,7 @@ before_install:
   - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
   - tar -xvzf geckodriver*
   - sudo chmod +x geckodriver
-  - export PATH=$PATH:./geckodriver
+  - export PATH=$PATH:`pwd`
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
   - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
