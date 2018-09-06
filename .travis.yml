@@ -37,14 +37,12 @@ before_install:
   - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
   - tar -xvzf geckodriver*
   - sudo chmod +x geckodriver
-  - export PATH=$PATH:/path-to-extracted-file/geckodriver
+  - export PATH=$PATH:./geckodriver
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
   - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
 # Second step, install required dependencies.
 install:
-  - echo $PATH
-  - cat /etc/hosts
   - docker build -t ramrodpcp/auxiliary-services:$TAG ./docker/aux_dockerfile/
   - export LOGLEVEL=DEBUG
   - docker pull ramrodpcp/frontend-ui:$TAG
