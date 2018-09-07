@@ -25,13 +25,13 @@ done
 docker pull selenium/standalone-firefox:3.14.0-dubnium
 docker pull selenium/standalone-chrome:3.14.0-dubnium
 
-rm -rf db_logs
-mkdir db_logs
+rm -rf `pwd`/db_logs
+mkdir `pwd`/db_logs
 
 # run stack with TAG=test and START_AUX/HARNESS
 docker swarm init
 docker network create --driver=overlay --attachable pcp
-START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c ./integration-stack/docker/docker-compose.yml pcp-test
+START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=`pwd`/ docker stack deploy -c ./integration-stack/docker/docker-compose.yml pcp-test
 docker run -d -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
 docker run -d -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
 
