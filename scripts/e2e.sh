@@ -49,6 +49,7 @@ done
 
 if (( counter > 44 )); then
     echo "Harness not healthy within timeout: ${counter}s"
+    docker ps -a
     exit 1
 fi
 
