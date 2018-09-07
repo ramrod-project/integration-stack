@@ -34,45 +34,10 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
-  - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
-# Second step, install required dependencies.
-install:
-  - export LOGLEVEL=DEBUG
-  - docker pull ramrodpcp/frontend-ui:$TAG
-  - docker pull ramrodpcp/database-brain:$TAG
-  - docker pull ramrodpcp/backend-controller:$TAG
-  - docker pull ramrodpcp/interpreter-plugin:$TAG
-  - docker pull ramrodpcp/websocket-server:$TAG
-  - docker pull ramrodpcp/robot-framework-xvfb:$TAG
-  - docker pull ramrodpcp/auxiliary-wrapper:$TAG
-  - docker pull ramrodpcp/auxiliary-services:$TAG
-  - docker pull selenium/standalone-firefox:3.14.0-dubnium
-  - docker pull selenium/standalone-chrome:3.14.0-dubnium
-
-# Third step, set up environment and run the stack.
-before_script:
-  - docker swarm init
-  - docker network create --driver=overlay --attachable pcp
-  - mkdir db_logs 2>&1 >>/dev/null
-  - START_HARNESS=YES START_AUX=YES TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
-  - docker run -d -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
-  - docker run -d -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
-  - sleep 30
-  - curl http://frontend:8080 >> /dev/null
-  - docker stack ps pcp-test --no-trunc
-  - docker ps -a
-
-# Fourth step, test away!
+# Run integration test script
 script:
-  - pip install -r linharn/requirements.txt
-  - pytest linharn/e2e.py
-
-# Cleanup, housekeeping
-after_success:
-  - docker stack rm test-stack
-  - docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs docker stop
+  - ./scripts/e2e.sh
 
 notifications:
   slack: ramrod-project:GDF82rRYDg3KSekrT3GA24qO
