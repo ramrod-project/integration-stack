@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO:
-# - add selenium tests
-
 # clone integration stack and set variables
 git clone -b $TRAVIS_BRANCH https://github.com/ramrod-project/integration-stack.git
 declare -a images=( "backend-controller" "interpreter-plugin" "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper" )
@@ -25,15 +22,18 @@ for img in "${pullImages[@]}"; do
     docker tag $img:$TAG $img:test
 done
 
-# get the docker-compose file
-curl https://raw.githubusercontent.com/ramrod-project/integration-stack/$TRAVIS_BRANCH/docker/docker-compose.yml > docker-compose.yml
+docker pull selenium/standalone-firefox:3.14.0-dubnium
+docker pull selenium/standalone-chrome:3.14.0-dubnium
+
+rm -rf `pwd`/db_logs
+mkdir `pwd`/db_logs
 
 # run stack with TAG=test and START_AUX/HARNESS
 docker swarm init
 docker network create --driver=overlay --attachable pcp
-rm -rf db_logs
-mkdir db_logs
-START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=./ docker stack deploy -c ./docker-compose.yml pcp-test
+START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=`pwd`/ docker stack deploy -c ./integration-stack/docker/docker-compose.yml pcp-test
+docker run -d --rm -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
+docker run -d --rm -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
 
 # wait until all services start
 counter=0
@@ -49,12 +49,16 @@ done
 
 if (( counter > 44 )); then
     echo "Harness not healthy within timeout: ${counter}s"
+    docker stack ps pcp-test --no-trunc
     exit 1
 fi
 
 # get the selenium tests
-# pip install pytest
-# run selenium tests "pytest ..."
+pip install -r ./integration-stack/linharn/requirements.txt
+pytest ./integration-stack/linharn/e2e.py
 
 # remove stack
+docker stop selenium-firefox selenium-chrome
 docker stack rm pcp-test
+docker service rm AuxiliaryServices Harness-5000
+docker network prune -f
