@@ -19,6 +19,9 @@ services:
   frontend:
     image: ramrodpcp/frontend-ui:${TAG}
     deploy:
+      placement:
+          constraints:
+            - node.role == manager
       restart_policy:
         condition: on-failure
     networks:
@@ -33,6 +36,9 @@ services:
   websockets:
     image: ramrodpcp/websocket-server:${TAG}
     deploy:
+      placement:
+            constraints:
+              - node.role == manager
       restart_policy:
         condition: on-failure
     networks:
@@ -47,6 +53,9 @@ services:
   database:
     image: ramrodpcp/database-brain:${TAG}
     deploy:
+      placement:
+          constraints:
+            - node.role == manager
       restart_policy:
         condition: on-failure
     networks:
@@ -62,6 +71,9 @@ services:
   backend:
     image: ramrodpcp/backend-controller:${TAG}
     deploy:
+      placement:
+          constraints:
+            - node.role == manager
       restart_policy:
         condition: on-failure
     networks:
