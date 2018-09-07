@@ -22,7 +22,7 @@ branches:
   - qa
 
 addons:
-  chrome: stable
+  chrome: beta
 
 # The following are the pipeline stages. They
 # are executed in order inside of a VM in a bash
