@@ -34,11 +34,11 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - git clone https://github.com/ramrod-project/integration-stack
+  - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
+  - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
 # Second step, install required dependencies.
 install:
-  - docker build -t ramrodpcp/auxiliary-services:$TAG ./docker/aux_dockerfile/
   - export LOGLEVEL=DEBUG
   - docker pull ramrodpcp/frontend-ui:$TAG
   - docker pull ramrodpcp/database-brain:$TAG
@@ -48,6 +48,8 @@ install:
   - docker pull ramrodpcp/robot-framework-xvfb:$TAG
   - docker pull ramrodpcp/auxiliary-wrapper:$TAG
   - docker pull ramrodpcp/auxiliary-services:$TAG
+  - docker pull selenium/standalone-firefox:3.14.0-dubnium
+  - docker pull selenium/standalone-chrome:3.14.0-dubnium
 
 # Third step, set up environment and run the stack.
 before_script:
@@ -55,22 +57,22 @@ before_script:
   - docker network create --driver=overlay --attachable pcp
   - mkdir db_logs 2>&1 >>/dev/null
   - START_HARNESS=YES START_AUX=YES TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
-  - sleep 15
+  - docker run -d -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
+  - docker run -d -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
+  - sleep 30
+  - curl http://frontend:8080 >> /dev/null
   - docker stack ps pcp-test --no-trunc
   - docker ps -a
 
 # Fourth step, test away!
 script:
-  - docker run -t --rm --network pcp -v `pwd`/Robot:/opt/robotframework/tests ramrodpcp/robot-framework-xvfb:$TAG
+  - pip install -r linharn/requirements.txt
+  - pytest linharn/e2e.py
 
 # Cleanup, housekeeping
 after_success:
   - docker stack rm test-stack
   - docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs docker stop
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; 
-    then echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; fi
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false"  ]]; 
-    then docker push ramrodpcp/auxiliary-services:$TAG; fi
 
 notifications:
   slack: ramrod-project:GDF82rRYDg3KSekrT3GA24qO

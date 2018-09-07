@@ -4,3 +4,8 @@ repos*
 db_logs*
 plugins*
 .scripts*
+venv*
+*__pycache__*
+geckodriver*
+.pytest_cache/*
+.vscode
