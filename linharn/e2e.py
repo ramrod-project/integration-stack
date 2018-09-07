@@ -2,7 +2,7 @@ import multiprocessing
 
 from pytest import fixture, raises
 from selenium.webdriver import Remote
-from selenium.webdriver.DesiredCapabilities import FIREFOX
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
 from .linharn import control_loop
@@ -23,7 +23,7 @@ def test_instantiate(linharn_client):
     """
 
     # Connect to the Selenium server remove webdriver
-    browser = Remote("http://localhost:4444/wd/hub", FIREFOX.copy())
+    browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
     browser.implicitly_wait(20)
 
     browser.get("http://frontend:8080")
