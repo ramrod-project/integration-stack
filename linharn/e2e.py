@@ -18,27 +18,52 @@ def linharn_client():
     yield client_thread
     client_thread.terminate()
 
-def test_instantiate(linharn_client):
+def test_instantiate_firefox(linharn_client):
     """Test something...
     """
 
-    # Connect to the Selenium server remove webdriver
-    browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    browser.implicitly_wait(20)
+    # Connect to the Selenium server remove webdriver (Firefox)
+    ff_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
+    ff_browser.implicitly_wait(20)
 
-    browser.get("http://frontend:8080")
+    ff_browser.get("http://frontend:8080")
 
     # Add a target
 
-    add_tgt = browser.find_element_by_id('add_target_id')
+    add_tgt = ff_browser.find_element_by_id('add_target_id')
     add_tgt.click()
 
-    plgn = browser.find_element_by_id('service_name')
+    plgn = ff_browser.find_element_by_id('service_name')
     plgn.click()
     plgn.send_keys('h')
     plgn.send_keys(Keys.ENTER)
 
-    browser.find_element_by_id('location_num').send_keys('127.0.0.1')
+    ff_browser.find_element_by_id('location_num').send_keys('127.0.0.1')
 
-    submit = browser.find_element_by_id('add_target_submit')
+    submit = ff_browser.find_element_by_id('add_target_submit')
+    submit.click()
+
+def test_instantiate_chrome(linharn_client):
+    """Test something...
+    """
+
+    # Connect to the Selenium server remove webdriver (Firefox)
+    ch_browser = Remote("http://localhost:4445/wd/hub", DesiredCapabilities.CHROME.copy())
+    ch_browser.implicitly_wait(20)
+
+    ch_browser.get("http://frontend:8080")
+
+    # Add a target
+
+    add_tgt = ch_browser.find_element_by_id('add_target_id')
+    add_tgt.click()
+
+    plgn = ch_browser.find_element_by_id('service_name')
+    plgn.click()
+    plgn.send_keys('h')
+    plgn.send_keys(Keys.ENTER)
+
+    ch_browser.find_element_by_id('location_num').send_keys('127.0.0.1')
+
+    submit = ch_browser.find_element_by_id('add_target_submit')
     submit.click()
