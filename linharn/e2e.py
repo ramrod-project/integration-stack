@@ -1,8 +1,8 @@
 import multiprocessing
 
 from pytest import fixture, raises
-from pyvirtualdisplay import Display
-from selenium.webdriver import Chrome
+from selenium.webdriver import Remote
+from selenium.webdriver.DesiredCapabilities import FIREFOX
 from selenium.webdriver.common.keys import Keys
 
 from .linharn import control_loop
@@ -22,12 +22,8 @@ def test_instantiate(linharn_client):
     """Test something...
     """
 
-    # Start virtual display
-    display = Display(visible=0, size=(1920, 1080))
-    display.start()
-
-    # Start firefox browser using the virtual display
-    browser = Chrome()
+    # Connect to the Selenium server remove webdriver
+    browser = Remote("http://localhost:4444/wd/hub", FIREFOX.copy())
     browser.implicitly_wait(20)
 
     browser.get("http://frontend:8080")

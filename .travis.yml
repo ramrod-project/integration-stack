@@ -21,9 +21,6 @@ branches:
   - dev
   - qa
 
-addons:
-  chrome: beta
-
 # The following are the pipeline stages. They
 # are executed in order inside of a VM in a bash
 # shell, (thus they use bash syntax).
@@ -37,13 +34,6 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
-  - wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-  - mkdir drivers
-  - tar -xvzf geckodriver* -C ./drivers
-  - unzip chromedriver* -d ./drivers
-  - sudo chmod +x ./drivers/{geckodriver,chromedriver}
-  - export PATH=$PATH:`pwd`/drivers
   - DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
   - sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
@@ -58,6 +48,7 @@ install:
   - docker pull ramrodpcp/robot-framework-xvfb:$TAG
   - docker pull ramrodpcp/auxiliary-wrapper:$TAG
   - docker pull ramrodpcp/auxiliary-services:$TAG
+  - docker pull selenium/standalone-firefox:3.14.0-dubnium
 
 # Third step, set up environment and run the stack.
 before_script:
@@ -65,13 +56,14 @@ before_script:
   - docker network create --driver=overlay --attachable pcp
   - mkdir db_logs 2>&1 >>/dev/null
   - START_HARNESS=YES START_AUX=YES TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
+  - docker run -d -p 4444:4444 --name selenium --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
   - sleep 30
+  - curl http://frontend:8080 >> /dev/null
   - docker stack ps pcp-test --no-trunc
   - docker ps -a
 
 # Fourth step, test away!
 script:
-  # - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://frontend:8080
   - pip install -r linharn/requirements.txt
   - pytest linharn/e2e.py
 
