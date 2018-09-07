@@ -5,8 +5,6 @@ git clone -b $TRAVIS_BRANCH https://github.com/ramrod-project/integration-stack.
 declare -a images=( "backend-controller" "interpreter-plugin" "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper" )
 testImage=$(docker images | grep -v IMAGE |  awk '$2 == "test" {print $1}')
 
-echo "Testimage is ${testImage}"
-
 # initialize images array
 # check images against built test image to see which one
 # to not pull/tag.
@@ -26,8 +24,6 @@ done
 
 docker pull selenium/standalone-firefox:3.14.0-dubnium
 docker pull selenium/standalone-chrome:3.14.0-dubnium
-
-docker images
 
 rm -rf db_logs
 mkdir db_logs
@@ -53,8 +49,7 @@ done
 
 if (( counter > 44 )); then
     echo "Harness not healthy within timeout: ${counter}s"
-    docker stack ps pcp-test
-    docker ps -a
+    docker stack ps pcp-test --no-trunc
     exit 1
 fi
 
