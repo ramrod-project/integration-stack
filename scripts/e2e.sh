@@ -32,8 +32,8 @@ mkdir `pwd`/db_logs
 docker swarm init
 docker network create --driver=overlay --attachable pcp
 START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=`pwd`/ docker stack deploy -c ./integration-stack/docker/docker-compose.yml pcp-test
-docker run -d -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
-docker run -d -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
+docker run -d --rm -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
+docker run -d --rm -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
 
 # wait until all services start
 counter=0
@@ -58,7 +58,7 @@ pip install -r ./integration-stack/linharn/requirements.txt
 pytest ./integration-stack/linharn/e2e.py
 
 # remove stack
-docker rm selenium-firefox selenium-chrome
+docker stop selenium-firefox selenium-chrome
 docker stack rm pcp-test
 docker service rm AuxiliaryServices Harness-5000
 docker network prune -f
