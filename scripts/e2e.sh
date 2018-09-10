@@ -53,12 +53,22 @@ if (( counter > 44 )); then
     exit 1
 fi
 
+EXITCODE=0
 # get the selenium tests
 pip install -r ./integration-stack/linharn/requirements.txt
 pytest ./integration-stack/linharn/e2e.py
+# must exit upon test failure
+if ! [[ $? == 0 ]]; then
+    EXITCODE=1
+fi
 
 # remove stack
 docker stop selenium-firefox selenium-chrome
 docker stack rm pcp-test
 docker service rm AuxiliaryServices Harness-5000
 docker network prune -f
+
+if [[ $EXITCODE == "1" ]]; then
+    exit 1
+fi
+exit 0
