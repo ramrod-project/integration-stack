@@ -68,4 +68,7 @@ docker stack rm pcp-test
 docker service rm AuxiliaryServices Harness-5000
 docker network prune -f
 
-exit EXITCODE
+if [[ $EXITCODE == "1" ]]; then
+    exit 1
+fi
+exit 0
