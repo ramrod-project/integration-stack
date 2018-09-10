@@ -34,43 +34,10 @@ before_install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; 
     then export TAG=latest;
     else export TAG=$TRAVIS_BRANCH; fi
-  - git clone https://github.com/ramrod-project/integration-stack
 
-# Second step, install required dependencies.
-install:
-  - docker build -t ramrodpcp/auxiliary-services:$TAG ./docker/aux_dockerfile/
-  - export LOGLEVEL=DEBUG
-  - docker pull ramrodpcp/frontend-ui:$TAG
-  - docker pull ramrodpcp/database-brain:$TAG
-  - docker pull ramrodpcp/backend-controller:$TAG
-  - docker pull ramrodpcp/interpreter-plugin:$TAG
-  - docker pull ramrodpcp/websocket-server:$TAG
-  - docker pull ramrodpcp/robot-framework-xvfb:$TAG
-  - docker pull ramrodpcp/auxiliary-wrapper:$TAG
-  - docker pull ramrodpcp/auxiliary-services:$TAG
-
-# Third step, set up environment and run the stack.
-before_script:
-  - docker swarm init
-  - docker network create --driver=overlay --attachable pcp
-  - mkdir db_logs 2>&1 >>/dev/null
-  - START_HARNESS=YES START_AUX=YES TAG=$TAG LOGLEVEL=DEBUG LOGDIR=../ docker stack deploy -c docker/docker-compose.yml pcp-test >> /dev/null
-  - sleep 15
-  - docker stack ps pcp-test --no-trunc
-  - docker ps -a
-
-# Fourth step, test away!
+# Run integration test script
 script:
-  - docker run -t --rm --network pcp -v `pwd`/Robot:/opt/robotframework/tests ramrodpcp/robot-framework-xvfb:$TAG
-
-# Cleanup, housekeeping
-after_success:
-  - docker stack rm test-stack
-  - docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs docker stop
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; 
-    then echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; fi
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false"  ]]; 
-    then docker push ramrodpcp/auxiliary-services:$TAG; fi
+  - ./scripts/e2e.sh
 
 notifications:
   slack: ramrod-project:GDF82rRYDg3KSekrT3GA24qO
