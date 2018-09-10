@@ -56,6 +56,10 @@ fi
 # get the selenium tests
 pip install -r ./integration-stack/linharn/requirements.txt
 pytest ./integration-stack/linharn/e2e.py
+# must exit upon test failure
+if ! [[ $? == 0 ]]; then
+    exit 1
+fi
 
 # remove stack
 docker stop selenium-firefox selenium-chrome
