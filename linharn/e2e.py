@@ -78,23 +78,23 @@ def test_instantiate_addjob0(linharn_client):
     ff_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
     ff_browser.implicitly_wait(20)
 
-ff_browser.get("http://frontend:8080")
+    ff_browser.get("http://frontend:8080")
 
 # add job from plugin list
 
-tgt_name = browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
-tgt_name.click()
+    tgt_name = browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
+    tgt_name.click()
 
-tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+    tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
 
-add_job = browser.find_element_by_id('add_job_sc_id1')
-add_job.click()
+    add_job = browser.find_element_by_id('add_job_sc_id1')
+    add_job.click()
 
-browser.implicitly_wait(10)
+    browser.implicitly_wait(10)
 
-plugin = browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+    plugin = browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
-addr = browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+    addr = browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
 
 
 # Run same test using Chrome
@@ -107,21 +107,21 @@ def test_instantiate_addjob1(linharn_client):
     ch_browser = Remote("http://localhost:4445/wd/hub", DesiredCapabilities.CHROME.copy())
     ch_browser.implicitly_wait(20)
 
-ch_browser.get("http://frontend:8080")
+    ch_browser.get("http://frontend:8080")
 
 # add job from plugin list
 
-tgt_name = browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
-tgt_name.click()
+    tgt_name = browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
+    tgt_name.click()
 
-tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+    tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
 
-add_job = browser.find_element_by_id('add_job_sc_id1')
-add_job.click()
+    add_job = browser.find_element_by_id('add_job_sc_id1')
+    add_job.click()
 
-browser.implicitly_wait(10)
+    browser.implicitly_wait(10)
 
-plugin = browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+    plugin = browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
-addr = browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+    addr = browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
 
