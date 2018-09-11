@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# add frontend to hosts file
+DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
+sudo cp /etc/hosts /etc/hosts.bak
+sudo sed -i 's/^.*frontend$//g' /etc/hosts
+sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
+
 # clone integration stack and set variables
 git clone -b $TRAVIS_BRANCH https://github.com/ramrod-project/integration-stack.git
 declare -a images=( "backend-controller" "interpreter-plugin" "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper" )
@@ -67,6 +73,8 @@ docker stop selenium-firefox selenium-chrome
 docker stack rm pcp-test
 docker service rm AuxiliaryServices Harness-5000
 docker network prune -f
+
+sudo cp /etc/hosts.bak /etc/hosts
 
 if [[ $EXITCODE == "1" ]]; then
     exit 1
