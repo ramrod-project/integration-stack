@@ -82,7 +82,7 @@ def test_instantiate_addjob0(linharn_client):
 
 # add job from plugin list
 
-    tgt_name = browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
+    tgt_name = browser.find_element_by_id('na_tag_id1').get_attribute('Harness')
     tgt_name.click()
 
     tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
