@@ -1,25 +1,42 @@
-import multiprocessing
+from multiprocessing import Process
 from os import environ
+from time import sleep
 
 from pytest import fixture, raises
+import rethinkdb as r
 from selenium.webdriver import Chrome, Firefox, Remote
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
 from .linharn import control_loop
 
+TARGET_TABLE = r.db("Brain").table("Targets")
+OUTPUT_TABLE = r.db("Brain").table("Outputs")
+JOBS_TABLE = r.db("Brain").table("Jobs")
+
+TABLES = [TARGET_TABLE, OUTPUT_TABLE, JOBS_TABLE]
+
+# Fixture will delete all jobs, targets, and outputs
+# before a test session from database.
+@fixture(scope="session", autouse=True)
+def clear_dbs():
+    conn = r.connect("frontend")
+    for table in TABLES:
+        table.delete().run(conn)
+    sleep(1)
 
 @fixture(scope="function")
 def linharn_client():
     """Generates and runs a Harness plugin thread
     connecting to 127.0.0.1:5000
     """
-    client_thread = multiprocessing.Process(target=control_loop, args=("C_127.0.0.1_1",))
+    client_thread = Process(target=control_loop, args=("C_127.0.0.1_1",))
     client_thread.start()
     yield client_thread
     client_thread.terminate()
 
-@fixture(scope="function")
+@fixture(scope="module")
 def chrome_browser():
     # Connect to the Selenium server remove webdriver (Chrome)
     no_headless = environ.get("NO_HEADLESS", "")
@@ -32,8 +49,7 @@ def chrome_browser():
     yield browser
     browser.close()
 
-
-@fixture(scope="function")
+@fixture(scope="module")
 def firefox_browser():
     # Connect to the Selenium server remove webdriver (Firefox)
     no_headless = environ.get("NO_HEADLESS", "")
@@ -99,9 +115,9 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
 
     firefox_browser.implicitly_wait(10)
 
-    plugin = firefox_browser.find_element_by_id('pluginid0').get_attribute('Harness:5000')
+    plugin = firefox_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
-    addr = firefox_browser.find_element_by_id('addressid0').get_attribute('127.0.0.2')
+    addr = firefox_browser.find_element_by_id('addressid1').get_attribute('127.0.0.2')
 
 
 # Run same test using Chrome

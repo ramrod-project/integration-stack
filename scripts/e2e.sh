@@ -60,6 +60,8 @@ done
 if (( counter > 44 )); then
     echo "Harness not healthy within timeout: ${counter}s"
     docker stack ps pcp-test --no-trunc
+    docker service ps Harness-5000
+    docker service logs Harness-5000
     exit 1
 fi
 
