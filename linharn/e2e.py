@@ -67,3 +67,61 @@ def test_instantiate_chrome(linharn_client):
 
     submit = ch_browser.find_element_by_id('add_target_submit')
     submit.click()
+    
+    # Add a job. Run job is a separate test case. Test both Firefox and Chrome.
+
+def test_instantiate_addjob0(linharn_client):
+    """Test something...
+    """
+
+    # Connect to the Selenium server remote webdriver (Firefox)
+    ff_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
+    ff_browser.implicitly_wait(20)
+
+    ff_browser.get("http://frontend:8080")
+
+# add job from plugin list
+
+    tgt_name = ff_browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
+    #tgt_name.click()
+
+    tgt_ip = ff_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+
+    add_job = ff_browser.find_element_by_id('add_job_sc_id1')
+    add_job.click()
+
+    ff_browser.implicitly_wait(10)
+
+    plugin = ff_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+
+    addr = ff_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+
+
+# Run same test using Chrome
+
+def test_instantiate_addjob1(linharn_client):
+    """Test something...
+    """
+
+    # Connect to the Selenium server remote webdriver (Chrome)
+    ch_browser = Remote("http://localhost:4445/wd/hub", DesiredCapabilities.CHROME.copy())
+    ch_browser.implicitly_wait(20)
+
+    ch_browser.get("http://frontend:8080")
+
+# add job from plugin list
+
+    tgt_name = ch_browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
+    #tgt_name.click()
+
+    tgt_ip = ch_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+
+    add_job = ch_browser.find_element_by_id('add_job_sc_id1')
+    add_job.click()
+
+    ch_browser.implicitly_wait(10)
+
+    plugin = ch_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+
+    addr = ch_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+
