@@ -82,19 +82,19 @@ def test_instantiate_addjob0(linharn_client):
 
 # add job from plugin list
 
-    tgt_name = browser.find_element_by_id('na_tag_id1').get_attribute('Harness')
+    tgt_name = ff_browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
     tgt_name.click()
 
-    tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+    tgt_ip = ff_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
 
-    add_job = browser.find_element_by_id('add_job_sc_id1')
+    add_job = ff_browser.find_element_by_id('add_job_sc_id1')
     add_job.click()
 
-    browser.implicitly_wait(10)
+    ff_browser.implicitly_wait(10)
 
-    plugin = browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+    plugin = ff_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
-    addr = browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+    addr = ff_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
 
 
 # Run same test using Chrome
@@ -111,17 +111,17 @@ def test_instantiate_addjob1(linharn_client):
 
 # add job from plugin list
 
-    tgt_name = browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
+    tgt_name = ch_browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
     tgt_name.click()
 
-    tgt_ip = browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+    tgt_ip = ch_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
 
-    add_job = browser.find_element_by_id('add_job_sc_id1')
+    add_job = ch_browser.find_element_by_id('add_job_sc_id1')
     add_job.click()
 
-    browser.implicitly_wait(10)
+    ch_browser.implicitly_wait(10)
 
-    plugin = browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+    plugin = ch_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
-    addr = browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+    addr = ch_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
 
