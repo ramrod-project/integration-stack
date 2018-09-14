@@ -150,7 +150,7 @@ def test_instantiate_addcmd0(linharn_client):
 
     # Connect to the Selenium server remote webdriver (Firefox)
     firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(10)
+    firefox_browser.implicitly_wait(20)
 
     # bring up the Harness command list
     echo_msg = firefox_browser.find_element_by_id('acommandid4')
@@ -171,7 +171,7 @@ def test_instantiate_addcmd1(linharn_client):
 
     # Connect to the Selenium server remote webdriver (Chrome)
     chrome_browser = Remote("http://localhost:4445/wd/hub", DesiredCapabilities.CHROME.copy())
-    chrome_browser.implicitly_wait(10)
+    chrome_browser.implicitly_wait(20)
 
     # bring up the Harness command list
     echo_msg = chrome_browser.find_element_by_id('acommandid4')
