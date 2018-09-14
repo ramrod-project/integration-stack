@@ -153,6 +153,9 @@ def test_instantiate_addcmd0(linharn_client):
     firefox_browser.implicitly_wait(20)
 
     # bring up the Harness command list
+    tgt_name = firefox_browser.find_element_by_id('name_tag_id1')
+    tgt_name.click()
+    
     echo_msg = firefox_browser.find_element_by_id('acommandid4')
     echo_msg.click()
 
@@ -163,7 +166,7 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('echo (test1234)')
 
-
+# run test w/ chrome browser
 
 def test_instantiate_addcmd1(linharn_client):
     """Test something...
@@ -174,6 +177,9 @@ def test_instantiate_addcmd1(linharn_client):
     chrome_browser.implicitly_wait(20)
 
     # bring up the Harness command list
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
+    tgt_name.click()
+    
     echo_msg = chrome_browser.find_element_by_id('acommandid4')
     echo_msg.click()
 
