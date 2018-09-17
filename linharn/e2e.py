@@ -105,8 +105,9 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     """Test something...
     """
     # add job from plugin list
-    tgt_name = firefox_browser.find_element_by_id('name_tag_id0').get_attribute('Harness')
-    #tgt_name.click()
+    tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
+    tgt_name.click()
+    tgt_name.get_attribute('Harness')
 
     tgt_ip = firefox_browser.find_element_by_id('address_tag_id0').get_attribute('127.0.0.2')
 
@@ -127,8 +128,9 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
     """
 
     # add job from plugin list
-    tgt_name = chrome_browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
-    #tgt_name.click()
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
+    tgt_name.click()
+    tgt_name.get_attribute('Harness')
 
     tgt_ip = chrome_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
 
