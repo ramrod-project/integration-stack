@@ -157,6 +157,9 @@ def test_instantiate_addcmd0(linharn_client):
     firefox_browser.get("http://frontend:8080")
 
     # bring up the Harness command list
+    tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
+    tgt_name.click()
+    
     cmd_name = firefox_browser.find_element_by_id('acommandid4')
     cmd_name.click()
 
@@ -178,6 +181,9 @@ def test_instantiate_addcmd1(linharn_client):
     chrome_browser.implicitly_wait(20)
 
     # bring up the Harness command list
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id0')
+    tgt_name.click()
+    
     cmd_name = chrome_browser.find_element_by_id('acommandid4')
     cmd_name.click()
 
