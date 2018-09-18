@@ -170,22 +170,5 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
     
-    # run a job
 
-def test_instantiate_runjob0(linharn_client):
-    """Test something...
-    """
-
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
-
-    exec_btn = firefox_browser.find_element_by_id('execute_button')
-    exec_btn.click()
-    
-    firefox_browser.implicitly_wait(30)
-
-    update_box = firefox_browser.find_element_by_id('updateid1')
 
