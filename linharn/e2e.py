@@ -187,5 +187,5 @@ def test_instantiate_runjob0(linharn_client):
     
     firefox_browser.implicitly_wait(30)
 
-    update_box = firefox_browser.find_element_by_id('updatecontent1').get_attribute('test1234')
+    update_box = firefox_browser.find_element_by_id('updateid1')
 
