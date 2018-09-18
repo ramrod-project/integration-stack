@@ -179,5 +179,5 @@ def test_instantiate_addcmd1(linharn_client):
     chrome_browser.implicitly_wait(20)
 
     # bring up the Harness command list
-    tgt_name = chrome_browser.find_element_by_id('name_tag_id0')
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
     tgt_name.click()
