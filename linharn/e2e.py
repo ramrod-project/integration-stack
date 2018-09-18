@@ -170,14 +170,7 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
     
-    # run the job
-    
-    run_job = firefox_browser.find_element_by_id('execute_button')
-    run_job.click()
-    
-    sleep(30)
-    
-    comp_job = firefox_browser.find_element_by_id('updatecontent1').get_attribute('test1234')
+
     
 
 
