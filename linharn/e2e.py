@@ -170,5 +170,14 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
 
+def test_instantiate_addcmd1(linharn_client):
+    """Test something...
+    """
 
+    # Connect to the Selenium server remote webdriver (Chrome)
+    chrome_browser = Remote("http://localhost:4445/wd/hub", DesiredCapabilities.CHROME.copy())
+    chrome_browser.implicitly_wait(20)
 
+    # bring up the Harness command list
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id0')
+    tgt_name.click()
