@@ -30,10 +30,10 @@ def test_instantiate_firefox(linharn_client):
     
     # Add a target
 
-    add_tgt = firefox_browser.find_element_by_id('add_target_id')
+    add_tgt = ff_browser.find_element_by_id('add_target_id')
     add_tgt.click()
 
-    plgn = firefox_browser.find_element_by_id('service_name')
+    plgn = ff_browser.find_element_by_id('service_name')
     plgn.click()
     plgn.send_keys('h')
     plgn.send_keys(Keys.ENTER)
@@ -106,7 +106,7 @@ def test_instantiate_addjob1(linharn_client):
     ch_browser = Remote("http://localhost:4445/wd/hub", DesiredCapabilities.CHROME.copy())
     ch_browser.implicitly_wait(20)
     
-    ch_browsner.get("http://frontend:8080")
+    ch_browser.get("http://frontend:8080")
 
     # add job from plugin list
     tgt_name = ch_browser.find_element_by_id('name_tag_id1').get_attribute('Harness')
