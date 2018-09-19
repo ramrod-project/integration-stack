@@ -63,7 +63,7 @@ def firefox_browser():
     browser.close()
 
 def test_instantiate_firefox(linharn_client, firefox_browser):
-    """Test something...
+    """Adds and verifies a target.
     """
 
     # Add a target
@@ -82,7 +82,7 @@ def test_instantiate_firefox(linharn_client, firefox_browser):
     submit.click()
 
 def test_instantiate_chrome(linharn_client, chrome_browser):
-    """Test something...
+    """Adds and verifies a target.
     """
     # Add a target
 
@@ -102,7 +102,7 @@ def test_instantiate_chrome(linharn_client, chrome_browser):
     # Add a job. Run job is a separate test case. Test both Firefox and Chrome.
 
 def test_instantiate_addjob0(linharn_client, firefox_browser):
-    """Test something...
+    """Loads and verifies a job.
     """
     # add job from plugin list
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
@@ -124,7 +124,7 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
 # Run same test using Chrome
 
 def test_instantiate_addjob1(linharn_client, chrome_browser):
-    """Test something...
+    """Loads and verifies a job.
     """
 
     # add job from plugin list
@@ -147,7 +147,8 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
 # Using Firefox browser
 
 def test_instantiate_addcmd0(linharn_client):
-    """Test something...
+    """ Brings up the echo command and populates the text box. Checks if the command field in the job row
+    is populated with specified text.
     """
 
     # Connect to the Selenium server remote webdriver (Firefox)
@@ -169,6 +170,26 @@ def test_instantiate_addcmd0(linharn_client):
     cmd_btn.click()
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
+    
+    # run a job
+
+def test_instantiate_runjob0(linharn_client):
+    """This test starts the job. 
+    """
+
+    # Connect to the Selenium server remote webdriver (Firefox)
+    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
+    firefox_browser.implicitly_wait(20)
+
+    firefox_browser.get("http://frontend:8080")
+
+    exec_btn = firefox_browser.find_element_by_id('execute_button')
+    exec_btn.click()
+    
+
+
+    
+    
     
 
     
