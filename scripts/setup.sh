@@ -2,8 +2,6 @@
 
 # This script sets up the host environment to run the application
 # in a docker stack. Loads the provided images.
-# TODO:
-# - add docker auto install
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 
