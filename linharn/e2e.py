@@ -187,15 +187,7 @@ def test_instantiate_runjob0(linharn_client):
     exec_btn.click()
     
 
-def test_instantiate_jobdone(linharn_client):
-    """check if job is done
-    """
 
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-    
-    job_done = firefox_browser.find_element_by_class_name('label label-Done')
     
     
     
