@@ -186,7 +186,9 @@ def test_instantiate_runjob0(linharn_client):
     exec_btn = firefox_browser.find_element_by_id('execute_button')
     exec_btn.click()
     
-    job_stat = firefox_browser.find_element_by_id('jobstatusid')
+    sleep(20)
+    
+    job_stat = firefox_browser.find_element_by_class_name('label label-Done')
     
 
     
