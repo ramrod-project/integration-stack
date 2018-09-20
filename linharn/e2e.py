@@ -81,25 +81,6 @@ def test_instantiate_firefox(linharn_client, firefox_browser):
     submit = firefox_browser.find_element_by_id('add_target_submit')
     submit.click()
 
-def test_instantiate_chrome(linharn_client, chrome_browser):
-    """Test something...
-    """
-    # Add a target
-
-    add_tgt = chrome_browser.find_element_by_id('add_target_id')
-    add_tgt.click()
-
-    plgn = chrome_browser.find_element_by_id('service_name')
-    plgn.click()
-    plgn.send_keys('h')
-    plgn.send_keys(Keys.ENTER)
-
-    chrome_browser.find_element_by_id('location_num').send_keys('127.0.0.1')
-
-    submit = chrome_browser.find_element_by_id('add_target_submit')
-    submit.click()
-    
-    # Add a job. Run job is a separate test case. Test both Firefox and Chrome.
 
 def test_instantiate_addjob0(linharn_client, firefox_browser):
     """Test something...
@@ -121,28 +102,6 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     addr = firefox_browser.find_element_by_id('addressid1').get_attribute('127.0.0.2')
 
 
-# Run same test using Chrome
-
-def test_instantiate_addjob1(linharn_client, chrome_browser):
-    """Test something...
-    """
-
-    # add job from plugin list
-    tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
-    tgt_name.click()
-    tgt_name.get_attribute('Harness')
-
-    tgt_ip = chrome_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
-
-    add_job = chrome_browser.find_element_by_id('add_job_sc_id1')
-    add_job.click()
-
-    chrome_browser.implicitly_wait(10)
-
-    plugin = chrome_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
-
-    addr = chrome_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
-    
     # Add commands to existing job
 # Using Firefox browser
 
@@ -170,7 +129,50 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
     
+# Begin Chrome tests
+    
+def test_instantiate_chrome(linharn_client, chrome_browser):
+    """Test something...
+    """
+    # Add a target
 
+    add_tgt = chrome_browser.find_element_by_id('add_target_id')
+    add_tgt.click()
+
+    plgn = chrome_browser.find_element_by_id('service_name')
+    plgn.click()
+    plgn.send_keys('h')
+    plgn.send_keys(Keys.ENTER)
+
+    chrome_browser.find_element_by_id('location_num').send_keys('127.0.0.1')
+
+    submit = chrome_browser.find_element_by_id('add_target_submit')
+    submit.click()
+    
+    # Add a job. Run job is a separate test case. Test both Firefox and Chrome.
+
+# Run same test using Chrome
+
+def test_instantiate_addjob1(linharn_client, chrome_browser):
+    """Test something...
+    """
+
+    # add job from plugin list
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
+    tgt_name.click()
+    tgt_name.get_attribute('Harness')
+
+    tgt_ip = chrome_browser.find_element_by_id('address_tag_id1').get_attribute('127.0.0.1')
+
+    add_job = chrome_browser.find_element_by_id('add_job_sc_id1')
+    add_job.click()
+
+    chrome_browser.implicitly_wait(10)
+
+    plugin = chrome_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
+
+    addr = chrome_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
+    
     
 
 
