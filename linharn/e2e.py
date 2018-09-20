@@ -128,9 +128,9 @@ def test_instantiate_addcmd0(linharn_client):
     cmd_btn.click()
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
-    
-    def test_instantiate_addcmd0(linharn_client):
-    """Test something...
+
+def test_instantiate_addcmd0(linharn_client):
+    """ Adds command to job
     """
 
     # Connect to the Selenium server remote webdriver (Firefox)
