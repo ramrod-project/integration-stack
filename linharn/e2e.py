@@ -175,8 +175,7 @@ def test_instantiate_chkjob0(linharn_client):
     firefox_browser.implicitly_wait(20)
 
     firefox_browser.get("http://frontend:8080")
-	
-    job_done = firefox_browser.find_element_by_id('updatestatusid1')
+    job_done = firefox_browser.find_element_by_xpath("//span[contains(@class, 'label') and contains(@class, 'label-Done')]");
 
 #------------------------------------------------------------------------------    
 # Begin Chrome tests
