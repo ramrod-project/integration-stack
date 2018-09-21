@@ -105,15 +105,9 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     # Add commands to existing job
 # Using Firefox browser
 
-def test_instantiate_addcmd0(linharn_client):
+def test_instantiate_addcmd0(linharn_client, firefox_browser):
     """Test something...
     """
-
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
 
     # bring up the Harness command list
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
@@ -133,12 +127,6 @@ def test_instantiate_addcmd0(linharn_client):
     """ Adds command to job
     """
 
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
-
     # bring up the Harness command list
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
     tgt_name.click()
@@ -153,29 +141,23 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
 	
-def test_instantiate_runjob0(linharn_client):
+def test_instantiate_runjob0(linharn_client, firefox_browser):
     """This test starts the job. 
     """
-
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
 
     exec_btn = firefox_browser.find_element_by_id('execute_button')
     exec_btn.click()
 
-def test_instantiate_chkjob0(linharn_client):
+def test_instantiate_chkjob0(linharn_client, firefox_browser):
     """Check to see if job was successful 
     """
-
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
- 	  
+    c = r.db("Brain").table("Jobs").run()
+    res = None
+    for d in c:
+        res = d
+    print(res)
+    assert res
+    assert res["Status"] == "Done"
     job_done = firefox_browser.find_element_by_id('updatestatusid1')
 
 #------------------------------------------------------------------------------    
