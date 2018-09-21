@@ -11,7 +11,6 @@ LOGLEVEL=""
 # Get directory info
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
-DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 
 # Prevent CRTL-C echo
 stty -echoctl
@@ -140,6 +139,20 @@ function pull_latest() {
     done
 }
 
+function set_hosts() {
+    DOCKER_IP=$(docker node inspect -f "{{.Status.Addr}}" `docker node ls | grep Leader | awk '{print $3}'`)
+
+    cp /etc/hosts /etc/hosts.bak 2>&1 1>>/dev/null
+    sed -i 's/^.*frontend$//g' /etc/hosts 2>&1 1>>/dev/null
+    bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts" 2>&1 1>>/dev/null
+    if ! [[ $? == 0 ]]; then
+        echo "Could not add ${DOCKER_IP} to host file! Did you run as sudo?"
+        exit 1
+    else
+        echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
+    fi
+}
+
 if ! [[ $(docker --version | grep 18.) ]]; then
     echo "Docker 18.x-ce install not detected! Exiting..."
     exit 2
@@ -157,16 +170,6 @@ if [[ "$LOGLEVEL" == "" ]]; then
     LOGLEVEL="INFO"
 fi
 
-cp /etc/hosts /etc/hosts.bak 2>&1 1>>/dev/null
-sed -i 's/^.*frontend$//g' /etc/hosts 2>&1 1>>/dev/null
-bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts" 2>&1 1>>/dev/null
-if ! [[ $? == 0 ]]; then
-    echo "Could not add ${DOCKER_IP} to host file! Did you run as sudo?"
-    exit 1
-else
-    echo "***Added ${DOCKER_IP} to /etc/hosts as 'frontend'"
-fi
-
 # Avoid weird error
 docker logout 2>&1 1>>/dev/null
 
@@ -182,6 +185,9 @@ do
             ;;
         "No")
             break
+            ;;
+        "exit")
+            exit 0
             ;;
         *) echo "invalid option";;
     esac
@@ -263,6 +269,7 @@ trap crtl_c SIGINT
 trap ctrl_c SIGTSTP
 
 # Deploy stack and watch
+set_hosts
 echo "Deploying stack..."
 rm -rf $BASE_DIR/db_logs
 mkdir $BASE_DIR/db_logs

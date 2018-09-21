@@ -1,10 +1,17 @@
 #!/bin/bash
 
-# TODO:
-# - add selenium tests
+# add frontend to hosts file
+DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
+sudo cp /etc/hosts /etc/hosts.bak
+sudo sed -i 's/^.*frontend$//g' /etc/hosts
+sudo bash -c "echo \"${DOCKER_IP}     frontend\" >> /etc/hosts"
 
 # clone integration stack and set variables
-git clone -b $TRAVIS_BRANCH https://github.com/ramrod-project/integration-stack.git
+STACK_DIR=`pwd`/
+if [[ $(pwd | sed 's/.*\///g') != "integration-stack" ]]; then
+    git clone -b $TRAVIS_BRANCH https://github.com/ramrod-project/integration-stack.git
+    STACK_DIR=`pwd`/integration-stack
+fi
 declare -a images=( "backend-controller" "interpreter-plugin" "database-brain" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper" )
 testImage=$(docker images | grep -v IMAGE |  awk '$2 == "test" {print $1}')
 
@@ -25,15 +32,18 @@ for img in "${pullImages[@]}"; do
     docker tag $img:$TAG $img:test
 done
 
-# get the docker-compose file
-curl https://raw.githubusercontent.com/ramrod-project/integration-stack/$TRAVIS_BRANCH/docker/docker-compose.yml > docker-compose.yml
+docker pull selenium/standalone-firefox:3.14.0-dubnium
+docker pull selenium/standalone-chrome:3.14.0-dubnium
+
+rm -rf `pwd`/db_logs
+mkdir `pwd`/db_logs
 
 # run stack with TAG=test and START_AUX/HARNESS
 docker swarm init
 docker network create --driver=overlay --attachable pcp
-rm -rf db_logs
-mkdir db_logs
-START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=./ docker stack deploy -c ./docker-compose.yml pcp-test
+START_AUX=YES START_HARNESS=YES TAG=test LOGLEVEL=DEBUG LOGDIR=`pwd`/ docker stack deploy -c $STACK_DIR/docker/docker-compose.yml pcp-test
+docker run -d --rm -p 4444:4444 --name selenium-firefox --network pcp --shm-size=2g selenium/standalone-firefox:3.14.0-dubnium
+docker run -d --rm -p 4445:4444 --name selenium-chrome --network pcp --shm-size=2g selenium/standalone-chrome:3.14.0-dubnium
 
 # wait until all services start
 counter=0
@@ -49,12 +59,30 @@ done
 
 if (( counter > 44 )); then
     echo "Harness not healthy within timeout: ${counter}s"
+    docker stack ps pcp-test --no-trunc
+    docker service ps Harness-5000
+    docker service logs Harness-5000
     exit 1
 fi
 
+EXITCODE=0
 # get the selenium tests
-# pip install pytest
-# run selenium tests "pytest ..."
+pip install -r $STACK_DIR/linharn/requirements.txt
+pytest $STACK_DIR/linharn/e2e.py
+# must exit upon test failure
+if ! [[ $? == 0 ]]; then
+    EXITCODE=1
+fi
 
 # remove stack
+docker stop selenium-firefox selenium-chrome
 docker stack rm pcp-test
+docker service rm AuxiliaryServices Harness-5000
+docker network prune -f
+
+sudo cp /etc/hosts.bak /etc/hosts
+
+if [[ $EXITCODE == "1" ]]; then
+    exit 1
+fi
+exit 0

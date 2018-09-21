@@ -4,135 +4,11 @@
 
 ## Table of Contents
 
-[Docker installation (repo)](#dockerrepo)  
-[Docker installation (package)](#dockerpackage)  
 [Export files (QA)](#exportqa)  
-[Export files (production)](#exportprod)  
+[Export files with plugins (production)](#exportprod)  
 [Load images](#load)  
 [Deploy stack (auto)](#stackauto)  
 [Deploy stack (manual)](#stackmanual)  
-
-### Docker installation (from repo)<a name="dockerrepo"></a>
-
-**_Ubuntu 16.04_**
-
-Set up repository in apt package manager.
-
-1. Update `apt` index:
-
-```
-sudo apt-get update
-```
-
-2. Install dependencies for install:
-
-```
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
-```
-
-3. Add GPG key:
-
-```
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-```
-
-4. Set up stable repo:
-
-```
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-```
-
-5. Update `apt`:
-
-```
-sudo apt-get update
-```
-
-6. Install docker-ce.
-
-```
-sudo apt-get install docker-ce
-```
-
-**_Centos 7_**
-
-
-
-### Docker installation (from package)<a name="dockerpackage"></a>
-
-**_Ubuntu 16.04_**
-
-Install on Ubuntu via deb package.
-
-1. Download latest stable release from https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/
-
-Replace \<version\> with the version you find in the link above.
-
-```
-curl https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_<version>~ce-0~ubuntu_amd64.deb -o docker-ce_<version>-0~ubuntu_amd64.deb
-```
-
-2. Install using dpkg.
-
-```
-sudo dpkg -i docker-ce_<version>-0~ubuntu_amd64.deb
-```
-
-3. Verify installation
-
-```
-sudo docker run hello-world
-```
-
-4. (Optional but helpful) Add user to docker group.
-
-```
-usermod -aG docker <user>
-```
-
-So you don't have to `sudo` every docker command. Replace \<user\> with your username.
-
-**_CentOS 7_**
-
-Install on Centos7 via rpm package.
-
-1. Download latest stable relase from https://download.docker.com/linux/centos/7/x86_64/stable/Packages/.
-
-Replace \<version\> with the version you find in the link above.
-
-```
-curl https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-<version>.ce-1.el7.centos.x86_64.rpm -o docker-ce-<version>.ce-1.el7.centos.x86_64.rpm
-```
-
-2. Install via yum package manager.
-
-```
-sudo yum install -y docker-ce-<version>.ce-1.el7.centos.x86_64.rpm
-```
-
-3. Start docker and test.
-
-```
-sudo systemctl start docker
-sudo systemctl enable docker
-
-sudo docker run hello-world
-```
-
-4. (Optional but helpful) Add user to docker group.
-
-```
-usermod -aG docker <user>
-```
-
-So you don't have to `sudo` every docker command. Replace \<user\> with your username.
 
 ### Exporting images/repos (for QA)<a name="exportqa"></a>
 
@@ -167,7 +43,9 @@ $ tar -t -f ramrodpcp-exports-***_***.tar.gz
 
 ```
 $ mkdir ./.scripts/plugins
+$ cp ../backend-interpreter/plugins/* ./.scripts/plugins (optional, if you want to deploy Harness)
 $ cp <plugin1>.py ./.scripts/plugins
+$ cp <__plugin1_extras_dir/*> ./.scripts/plugins/__plugin1_extras_dir (if extra files are needed)
 ```
 
 2. Run the dev-export.sh script to save production files to a .tar.gz file.
@@ -178,8 +56,6 @@ $ ./.scripts/dev-export.sh ./exports/ ./.scripts/plugins
 2) qa
 3) latest
 4) exit
-Please select a release to export: 1
-Please the ports needed by your plugin(s) separated by a space: 8080 9090 10100
 ...
 ```
 
@@ -258,7 +134,7 @@ docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[
 Since we are deploying this application as a docker stack, we must initialize the host as a docker swarm node. An attachable network must also be created for the stack, so that containers can be dynamically added to it.
 
 ```
-docker swarm init
+docker swarm init --listen-addr <host_ip>:2377 --advertise-addr <host_ip>
 
 docker network create --driver=overlay --attachable pcp
 ```
