@@ -166,7 +166,7 @@ def test_instantiate_runjob0(linharn_client):
     exec_btn = firefox_browser.find_element_by_id('execute_button')
     exec_btn.click()
 
-def test_instantiate_runjob0(linharn_client):
+def test_instantiate_chkjob0(linharn_client):
     """Check to see if job was successful 
     """
 
