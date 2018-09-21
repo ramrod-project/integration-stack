@@ -176,7 +176,7 @@ def test_instantiate_runjob0(linharn_client):
 
     firefox_browser.get("http://frontend:8080")
 	
-    job_done = firefox_browser.find_element_by_xpath("//div[contains(@class, 'W4BodyContent') and contains(@class, 'label label-Done')]");
+    job_done = firefox_browser.find_element_by_id('updatestatusid1')
 
 #------------------------------------------------------------------------------    
 # Begin Chrome tests
