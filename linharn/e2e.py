@@ -105,24 +105,6 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     # Add commands to existing job
 # Using Firefox browser
 
-def test_instantiate_addcmd0(linharn_client, firefox_browser):
-    """Test something...
-    """
-
-    # bring up the Harness command list
-    tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
-    tgt_name.click()
-    
-    cmd_name = firefox_browser.find_element_by_id('acommandid4')
-    cmd_name.click()
-
-    cmd_txt = firefox_browser.find_element_by_id('argumentid_0').send_keys('test1234')
-
-    cmd_btn = firefox_browser.find_element_by_id('add_command_to_job_id2')
-    cmd_btn.click()
-
-    cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
-
 def test_instantiate_addcmd0(linharn_client):
     """ Adds command to job
     """
