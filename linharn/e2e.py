@@ -158,7 +158,7 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
     print(res)
     assert res
     assert res["Status"] == "Done"
-    job_done = firefox_browser.find_element_by_id('updatestatusid1')
+    #job_done = firefox_browser.find_element_by_id('updatestatusid1')
 
 #------------------------------------------------------------------------------    
 # Begin Chrome tests
