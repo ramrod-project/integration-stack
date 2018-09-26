@@ -27,7 +27,7 @@ fi
 
 mkdir $BASE_DIR/.scripts/docker/plugin_interpreter/plugins
 PLUGINS_DIR=$BASE_DIR/.scripts/docker/plugin_interpreter/plugins
-cp -r $2/* $PLUGINS_DIR
+PLUGINS_EXTRA_DIR=$BASE_DIR/.scripts/docker/plugin_interpreter_extra/plugins
 
 PS3="Please select a release to export: "
 options=( "dev" "qa" "latest" "exit" )
@@ -71,6 +71,11 @@ done
 python3 $SCRIPT_DIR/manifest.py $PLUGINS_DIR
 mv ./manifest.json $SCRIPT_DIR/docker/plugin_controller
 
+# Move plugin files based on manifest entries
+
+cp -r ./plugins_extra $PLUGINS_EXTRA_DIR
+cp -r $2/* $PLUGINS_DIR
+
 # Build new controller image
 echo "Building new ramrodpcp/backend-controller:${TAG} image..."
 echo "Context: ${SCRIPT_DIR}/docker/plugin_controller"
@@ -79,7 +84,13 @@ docker build -t ramrodpcp/backend-controller:$TAG --build-arg TAG=$TAG --build-a
 # Build new interpreter image
 echo "Building new ramrodpcp/interpreter-plugin:${TAG} image..."
 echo "Context: ${SCRIPT_DIR}/docker/plugin_interpreter"
-docker build -t ramrodpcp/interpreter-plugin:$TAG --build-arg TAG=$TAG --build-arg PORTS="${PORTS}" $SCRIPT_DIR/docker/plugin_interpreter
+docker build -t ramrodpcp/interpreter-plugin:$TAG --build-arg TAG=$TAG $SCRIPT_DIR/docker/plugin_interpreter
+
+# Build new 'extra' interpreter image
+echo "Building new ramrodpcp/interpreter-plugin-extra:${TAG} image..."
+echo "Context: ${SCRIPT_DIR}/docker/plugin_interpreter_extra"
+docker build -t ramrodpcp/interpreter-plugin-extra:$TAG --build-arg TAG=$TAG $SCRIPT_DIR/docker/plugin_interpreter_extra
+
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
 imagesave_interpreter=image-ramrodpcp-interpreter-plugin-$TAG-$timestamp

@@ -52,9 +52,21 @@ def main():
         if os not in ["1", "2", "3"]:
             print("Please enter 1,2, or 3\n")
             continue
+        extra = False
+        if os in ["2", "3"]:
+            while True:
+                print("Does the plugin {} require extra features (Wine/zugbruecke - call Windows DLLs, M2Crypto - DES, RSA, etc.)?\n".format(plugins[i]))
+                print("\t1) Yes\n\t2) No\n")
+                extra_sel = input("Selection:")
+                if extra_sel not in ["1", "2"]:
+                    print("Please enter 1 or 2\n")
+                    continue
+                if extra_sel == "1":
+                    extra = True
         manifest.append({
             "Name": plugins[i],
-            "OS": OS_MAP[os]
+            "OS": OS_MAP[os],
+            "Extra": extra
         })
         i += 1
     destination_filename = "./manifest.json"
