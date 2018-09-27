@@ -35,6 +35,14 @@ do
     esac
 done
 
+if [[ -d ./exports ]]; then
+    rm -rf ./exports
+fi
+
+if [[ -d ./repos ]]; then
+    rm -rf ./repos
+fi
+
 mkdir ./{exports,repos,.scripts}
 
 declare -a images=( "backend-controller" "database-brain" "frontend-ui" "interpreter-plugin" "interpreter-plugin-extra" "websocket-server" "auxiliary-services" "auxiliary-wrapper" "devguide-api" )
