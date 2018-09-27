@@ -20,7 +20,7 @@ declare -a VALID_TAGS=( "dev" "qa" "latest" )
 declare -a VALID_LOGLEVELS=( "DEBUG" "INFO" "WARN" "ERROR" "CRITICAL" )
 
 # Images
-declare -a images=( "database-brain" "backend-controller" "interpreter-plugin" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper")
+declare -a images=( "database-brain" "backend-controller" "interpreter-plugin" "interpreter-plugin-extra" "frontend-ui" "websocket-server" "auxiliary-services" "auxiliary-wrapper")
 
 if ! [[ $(whoami) == "root" ]]; then
     echo "Please run script as sudo!"
