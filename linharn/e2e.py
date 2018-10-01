@@ -1,6 +1,6 @@
 from multiprocessing import Process
 from os import environ
-from time import sleep
+from time import sleep, time
 
 from pytest import fixture, raises
 import rethinkdb as r
@@ -31,6 +31,7 @@ def linharn_client():
     """Generates and runs a Harness plugin thread
     connecting to 127.0.0.1:5000
     """
+    r.connect("frontend").repl()
     client_thread = Process(target=control_loop, args=("C_127.0.0.1_1",))
     client_thread.start()
     yield client_thread
@@ -105,39 +106,9 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     # Add commands to existing job
 # Using Firefox browser
 
-def test_instantiate_addcmd0(linharn_client):
-    """Test something...
-    """
-
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
-
-    # bring up the Harness command list
-    tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
-    tgt_name.click()
-    
-    cmd_name = firefox_browser.find_element_by_id('acommandid4')
-    cmd_name.click()
-
-    cmd_txt = firefox_browser.find_element_by_id('argumentid_0').send_keys('test1234')
-
-    cmd_btn = firefox_browser.find_element_by_id('add_command_to_job_id2')
-    cmd_btn.click()
-
-    cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
-
-def test_instantiate_addcmd0(linharn_client):
+def test_instantiate_addcmd0(linharn_client, firefox_browser):
     """ Adds command to job
     """
-
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
 
     # bring up the Harness command list
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
@@ -153,18 +124,30 @@ def test_instantiate_addcmd0(linharn_client):
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
 	
-def test_instantiate_runjob0(linharn_client):
+def test_instantiate_runjob0(linharn_client, firefox_browser):
     """This test starts the job. 
     """
 
-    # Connect to the Selenium server remote webdriver (Firefox)
-    firefox_browser = Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX.copy())
-    firefox_browser.implicitly_wait(20)
-
-    firefox_browser.get("http://frontend:8080")
-
     exec_btn = firefox_browser.find_element_by_id('execute_button')
     exec_btn.click()
+
+def test_instantiate_chkjob0(linharn_client, firefox_browser):
+    """Check to see if job was successful 
+    """
+    done = False
+    res = None
+    start = time()
+    while time() - start < 30:
+        c = JOBS_TABLE.run()
+        for d in c:
+            res = d
+        if res and res["Status"] == "Done":
+            done = True
+            break
+        sleep(1)
+    print(res)
+    assert done
+    #job_done = firefox_browser.find_element_by_id('updatestatusid1')
 
 #------------------------------------------------------------------------------    
 # Begin Chrome tests
@@ -212,6 +195,49 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
 
     addr = chrome_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
     
+        # Add a command to existing job
+
+def test_instantiate_addcmd1(linharn_client, chrome_browser):
+    """ Adds command to job
+    """
+
+    # bring up the Harness command list
+    tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
+    tgt_name.click()
     
+    cmd_name = chrome_browser.find_element_by_id('acommandid4')
+    cmd_name.click()
+
+    cmd_txt = chrome_browser.find_element_by_id('argumentid_0').send_keys('test1234')
+
+    cmd_btn = chrome_browser.find_element_by_id('add_command_to_job_id1')
+    cmd_btn.click()
+
+    cmd_box = chrome_browser.find_element_by_id('commandid1').get_attribute('test1234')
+	
+def test_instantiate_runjob1(linharn_client, chrome_browser):
+    """This test starts the job. 
+    """
+
+    exec_btn = chrome_browser.find_element_by_id('execute_button')
+    exec_btn.click()
+
+def test_instantiate_chkjob1(linharn_client, chrome_browser):
+    """Check to see if job was successful 
+    """
+    done = False
+    res = None
+    start = time()
+    while time() - start < 30:
+        c = JOBS_TABLE.run()
+        for d in c:
+            res = d
+        if res and res["Status"] == "Done":
+            done = True
+            break
+        sleep(1)
+    print(res)
+    assert done
+    #job_done = chrome_browser.find_element_by_id('updatestatusid1')
 
 
