@@ -1,6 +1,6 @@
 from multiprocessing import Process
 from os import environ
-from time import sleep
+from time import sleep, time
 
 from pytest import fixture, raises
 import rethinkdb as r
@@ -31,6 +31,7 @@ def linharn_client():
     """Generates and runs a Harness plugin thread
     connecting to 127.0.0.1:5000
     """
+    r.connect("frontend").repl()
     client_thread = Process(target=control_loop, args=("C_127.0.0.1_1",))
     client_thread.start()
     yield client_thread
@@ -105,7 +106,7 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     # Add commands to existing job
 # Using Firefox browser
 
-def test_instantiate_addcmd0(linharn_client):
+def test_instantiate_addcmd0(linharn_client, firefox_browser):
     """ Adds command to job
     """
 
@@ -133,13 +134,19 @@ def test_instantiate_runjob0(linharn_client, firefox_browser):
 def test_instantiate_chkjob0(linharn_client, firefox_browser):
     """Check to see if job was successful 
     """
-    c = r.db("Brain").table("Jobs").run()
+    done = False
     res = None
-    for d in c:
-        res = d
+    start = time()
+    while time() - start < 30:
+        c = JOBS_TABLE.run()
+        for d in c:
+            res = d
+        if res and res["Status"] == "Done":
+            done = True
+            break
+        sleep(1)
     print(res)
-    assert res
-    assert res["Status"] == "Done"
+    assert done
     #job_done = firefox_browser.find_element_by_id('updatestatusid1')
 
 #------------------------------------------------------------------------------    
