@@ -210,7 +210,7 @@ def test_instantiate_addcmd1(linharn_client, chrome_browser):
 
     cmd_txt = chrome_browser.find_element_by_id('argumentid_0').send_keys('test1234')
 
-    cmd_btn = chrome_browser.find_element_by_id('add_command_to_job_id1')
+    cmd_btn = chrome_browser.find_element_by_id('add_command_to_job_id2')
     cmd_btn.click()
 
     cmd_box = chrome_browser.find_element_by_id('commandid1').get_attribute('test1234')
