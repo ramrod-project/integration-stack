@@ -77,7 +77,7 @@ def test_instantiate_firefox(linharn_client, firefox_browser):
     plgn.send_keys('h')
     plgn.send_keys(Keys.ENTER)
 
-    firefox_browser.find_element_by_id('location_num').send_keys('127.0.0.2')
+    firefox_browser.find_element_by_id('location_num').send_keys('127.0.0.1')
 
     submit = firefox_browser.find_element_by_id('add_target_submit')
     submit.click()
@@ -91,7 +91,7 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     tgt_name.click()
     tgt_name.get_attribute('Harness')
 
-    tgt_ip = firefox_browser.find_element_by_id('address_tag_id0').get_attribute('127.0.0.2')
+    tgt_ip = firefox_browser.find_element_by_id('address_tag_id0').get_attribute('127.0.0.1')
 
     add_job = firefox_browser.find_element_by_id('add_job_sc_id0')
     add_job.click()
@@ -100,7 +100,7 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
 
     plugin = firefox_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
-    addr = firefox_browser.find_element_by_id('addressid1').get_attribute('127.0.0.2')
+    addr = firefox_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
 
 
     # Add commands to existing job
