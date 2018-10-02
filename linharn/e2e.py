@@ -96,8 +96,6 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
     add_job = firefox_browser.find_element_by_id('add_job_sc_id0')
     add_job.click()
 
-    #firefox_browser.implicitly_wait(20)
-
     plugin = firefox_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
     addr = firefox_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
@@ -137,7 +135,7 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
     done = False
     res = None
     start = time()
-    while time() - start < 35:
+    while time() - start < 30:
         c = JOBS_TABLE.run()
         for d in c:
             res = d
@@ -189,8 +187,6 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
     add_job = chrome_browser.find_element_by_id('add_job_sc_id1')
     add_job.click()
 
-    chrome_browser.implicitly_wait(10)
-
     plugin = chrome_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
     addr = chrome_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
@@ -228,7 +224,7 @@ def test_instantiate_chkjob1(linharn_client, chrome_browser):
     done = False
     res = None
     start = time()
-    while time() - start < 35:
+    while time() - start < 30:
         c = JOBS_TABLE.run()
         for d in c:
             res = d
