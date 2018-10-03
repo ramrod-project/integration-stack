@@ -39,7 +39,7 @@ def linharn_client():
 
 @fixture(scope="module")
 def chrome_browser():
-    # Connect to the Selenium server remove webdriver (Chrome)
+    # Connect to the Selenium server remote webdriver (Chrome)
     no_headless = environ.get("NO_HEADLESS", "")
     if no_headless == "TRUE":
         browser = Firefox()
@@ -52,7 +52,7 @@ def chrome_browser():
 
 @fixture(scope="module")
 def firefox_browser():
-    # Connect to the Selenium server remove webdriver (Firefox)
+    # Connect to the Selenium server remote webdriver (Firefox)
     no_headless = environ.get("NO_HEADLESS", "")
     if no_headless == "TRUE":
         browser = Firefox()
@@ -84,9 +84,7 @@ def test_instantiate_firefox(linharn_client, firefox_browser):
 
 
 def test_instantiate_addjob0(linharn_client, firefox_browser):
-    """Test something...
-    """
-    # add job from plugin list
+ 
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
     tgt_name.click()
     tgt_name.get_attribute('Harness')
@@ -107,8 +105,6 @@ def test_instantiate_addjob0(linharn_client, firefox_browser):
 def test_instantiate_addcmd0(linharn_client, firefox_browser):
     """ Adds command to job
     """
-
-    # bring up the Harness command list
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
     tgt_name.click()
     
@@ -123,7 +119,7 @@ def test_instantiate_addcmd0(linharn_client, firefox_browser):
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
 	
 def test_instantiate_runjob0(linharn_client, firefox_browser):
-    """This test starts the job. 
+    """ Starts job. 
     """
 
     exec_btn = firefox_browser.find_element_by_id('execute_button')
@@ -145,16 +141,12 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
         sleep(1)
     print(res)
     assert done
-    #job_done = firefox_browser.find_element_by_id('updatestatusid1')
 
 #------------------------------------------------------------------------------    
 # Begin Chrome tests
 #------------------------------------------------------------------------------
     
 def test_instantiate_chrome(linharn_client, chrome_browser):
-    """Test something...
-    """
-    # Add a target
 
     add_tgt = chrome_browser.find_element_by_id('add_target_id')
     add_tgt.click()
@@ -169,15 +161,8 @@ def test_instantiate_chrome(linharn_client, chrome_browser):
     submit = chrome_browser.find_element_by_id('add_target_submit')
     submit.click()
     
-    # Add a job. Run job is a separate test case. Test both Firefox and Chrome.
-
-# Run same test using Chrome
-
 def test_instantiate_addjob1(linharn_client, chrome_browser):
-    """Test something...
-    """
 
-    # add job from plugin list
     tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
     tgt_name.click()
     tgt_name.get_attribute('Harness')
@@ -194,7 +179,7 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
         # Add a command to existing job
 
 def test_instantiate_addcmd1(linharn_client, chrome_browser):
-    """ Adds command to job
+    """ Adds a command
     """
 
     # bring up the Harness command list
@@ -212,7 +197,7 @@ def test_instantiate_addcmd1(linharn_client, chrome_browser):
     cmd_box = chrome_browser.find_element_by_id('commandid1').get_attribute('test1234')
 	
 def test_instantiate_runjob1(linharn_client, chrome_browser):
-    """This test starts the job. 
+    """ Starts job.
     """
 
     exec_btn = chrome_browser.find_element_by_id('execute_button')
@@ -234,6 +219,5 @@ def test_instantiate_chkjob1(linharn_client, chrome_browser):
         sleep(1)
     print(res)
     assert done
-    #job_done = chrome_browser.find_element_by_id('updatestatusid1')
 
 
