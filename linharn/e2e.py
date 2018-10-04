@@ -8,6 +8,9 @@ from selenium.webdriver import Chrome, Firefox, Remote
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 
 from .linharn import control_loop
 
@@ -33,7 +36,7 @@ def linharn_client():
     """
     r.connect("frontend").repl()
     client_thread = Process(target=control_loop, args=("C_127.0.0.1_1",))
-    client_thread.start()
+    client_thread.conda forgestart()
     yield client_thread
     client_thread.terminate()
 
@@ -84,7 +87,7 @@ def test_instantiate_firefox(linharn_client, firefox_browser):
 
 
 def test_instantiate_addjob0(linharn_client, firefox_browser):
- 
+
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
     tgt_name.click()
     tgt_name.get_attribute('Harness')
@@ -107,7 +110,7 @@ def test_instantiate_addcmd0(linharn_client, firefox_browser):
     """
     tgt_name = firefox_browser.find_element_by_id('name_tag_id0')
     tgt_name.click()
-    
+
     cmd_name = firefox_browser.find_element_by_id('acommandid4')
     cmd_name.click()
 
@@ -117,16 +120,16 @@ def test_instantiate_addcmd0(linharn_client, firefox_browser):
     cmd_btn.click()
 
     cmd_box = firefox_browser.find_element_by_id('commandid1').get_attribute('test1234')
-	
+
 def test_instantiate_runjob0(linharn_client, firefox_browser):
-    """ Starts job. 
+    """ Starts job.
     """
 
     exec_btn = firefox_browser.find_element_by_id('execute_button')
     exec_btn.click()
 
 def test_instantiate_chkjob0(linharn_client, firefox_browser):
-    """Check to see if job was successful 
+    """Check to see if job was successful
     """
     done = False
     res = None
@@ -142,10 +145,14 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
     print(res)
     assert done
 
-#------------------------------------------------------------------------------    
+
+
+"""
+
+#------------------------------------------------------------------------------
 # Begin Chrome tests
 #------------------------------------------------------------------------------
-    
+
 def test_instantiate_chrome(linharn_client, chrome_browser):
 
     add_tgt = chrome_browser.find_element_by_id('add_target_id')
@@ -160,7 +167,7 @@ def test_instantiate_chrome(linharn_client, chrome_browser):
 
     submit = chrome_browser.find_element_by_id('add_target_submit')
     submit.click()
-    
+
 def test_instantiate_addjob1(linharn_client, chrome_browser):
 
     tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
@@ -175,17 +182,19 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
     plugin = chrome_browser.find_element_by_id('pluginid1').get_attribute('Harness:5000')
 
     addr = chrome_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
-    
+
         # Add a command to existing job
 
 def test_instantiate_addcmd1(linharn_client, chrome_browser):
-    """ Adds a command
-    """
 
     # bring up the Harness command list
     tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
     tgt_name.click()
-    
+
+    ignored_exceptions=(NoSuchElementException,StaleElementReferenceException,)
+    cmd_name = WebDriverWait(chrome_browser, 20, ignored_exceptions=ignored_exceptions)\
+    .until(expected_conditions.presence_of_element_located((By.ID, acommandid4))
+
     cmd_name = chrome_browser.find_element_by_id('acommandid4')
     cmd_name.click()
 
@@ -195,17 +204,14 @@ def test_instantiate_addcmd1(linharn_client, chrome_browser):
     cmd_btn.click()
 
     cmd_box = chrome_browser.find_element_by_id('commandid1').get_attribute('test1234')
-	
+
 def test_instantiate_runjob1(linharn_client, chrome_browser):
-    """ Starts job.
-    """
 
     exec_btn = chrome_browser.find_element_by_id('execute_button')
     exec_btn.click()
 
 def test_instantiate_chkjob1(linharn_client, chrome_browser):
-    """Check to see if job was successful 
-    """
+
     done = False
     res = None
     start = time()
@@ -220,4 +226,4 @@ def test_instantiate_chkjob1(linharn_client, chrome_browser):
     print(res)
     assert done
 
-
+"""
