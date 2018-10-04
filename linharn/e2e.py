@@ -145,7 +145,7 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
 #------------------------------------------------------------------------------    
 # Begin Chrome tests
 #------------------------------------------------------------------------------
-    
+""""    
 def test_instantiate_chrome(linharn_client, chrome_browser):
 
     add_tgt = chrome_browser.find_element_by_id('add_target_id')
@@ -219,5 +219,7 @@ def test_instantiate_chkjob1(linharn_client, chrome_browser):
         sleep(1)
     print(res)
     assert done
+    
+    """
 
 
