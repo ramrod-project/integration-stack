@@ -187,7 +187,6 @@ def test_instantiate_addcmd1(linharn_client, chrome_browser):
     tgt_name.click()
     
     cmd_name = chrome_browser.find_element_by_id('acommandid4')
-    sleep(1)
     cmd_name.click()
 
     cmd_txt = chrome_browser.find_element_by_id('argumentid_0').send_keys('test1234')
