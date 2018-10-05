@@ -148,10 +148,10 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
 
 
 """
-
-#------------------------------------------------------------------------------
-# Begin Chrome tests
-#------------------------------------------------------------------------------
+   Chrome tests commented out due to instability.
+------------------------------------------------------------------------------
+ Begin Chrome tests
+------------------------------------------------------------------------------
 
 def test_instantiate_chrome(linharn_client, chrome_browser):
 
