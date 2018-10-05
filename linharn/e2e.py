@@ -36,7 +36,7 @@ def linharn_client():
     client_thread.start()
     yield client_thread
     client_thread.terminate()
-
+"""
 @fixture(scope="module")
 def chrome_browser():
     # Connect to the Selenium server remote webdriver (Chrome)
@@ -49,7 +49,7 @@ def chrome_browser():
     browser.get("http://frontend:8080")
     yield browser
     browser.close()
-
+"""
 @fixture(scope="module")
 def firefox_browser():
     # Connect to the Selenium server remote webdriver (Firefox)
