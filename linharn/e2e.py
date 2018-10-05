@@ -183,11 +183,9 @@ def test_instantiate_addjob1(linharn_client, chrome_browser):
 
     addr = chrome_browser.find_element_by_id('addressid1').get_attribute('127.0.0.1')
 
-        # Add a command to existing job
 
 def test_instantiate_addcmd1(linharn_client, chrome_browser):
 
-    # bring up the Harness command list
     tgt_name = chrome_browser.find_element_by_id('name_tag_id1')
     tgt_name.click()
 
