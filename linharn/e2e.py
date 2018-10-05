@@ -131,7 +131,7 @@ def test_instantiate_chkjob0(linharn_client, firefox_browser):
     done = False
     res = None
     start = time()
-    while time() - start < 40:
+    while time() - start < 30:
         c = JOBS_TABLE.run()
         for d in c:
             res = d
