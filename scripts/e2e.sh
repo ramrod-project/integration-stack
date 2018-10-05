@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exit 0
-
 # add frontend to hosts file
 DOCKER_IP=$(ifconfig -a | grep -A 1 "docker" | awk 'NR==2 {print $2}' | sed 's/addr://g')
 sudo cp /etc/hosts /etc/hosts.bak
