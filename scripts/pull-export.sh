@@ -3,7 +3,6 @@
 # This script pulls the latest versions of the ramrodpcp docker
 # images based on the tag provided by user input. It then exports
 # them to .tar.gz files.
-# TODO:
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
@@ -35,9 +34,17 @@ do
     esac
 done
 
+if [[ -d ./exports ]]; then
+    rm -rf ./exports
+fi
+
+if [[ -d ./repos ]]; then
+    rm -rf ./repos
+fi
+
 mkdir ./{exports,repos,.scripts}
 
-declare -a images=( "backend-controller" "database-brain" "frontend-ui" "interpreter-plugin" "websocket-server" "auxiliary-services" "auxiliary-wrapper" "devguide-api" )
+declare -a images=( "backend-controller" "database-brain" "frontend-ui" "interpreter-plugin" "interpreter-plugin-extra" "websocket-server" "auxiliary-services" "auxiliary-wrapper" "devguide-api" )
 
 timestamp=$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
 
@@ -53,7 +60,7 @@ for img in "${images[@]}"; do
     gzip $BASE_DIR/$imagesave.tar && mv $BASE_DIR/$imagesave.tar.gz ./exports
 done
 
-for repo in "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api" "aux-services-service"; do
+for repo in "python-brain" "integration-stack" "backend-interpreter" "database-brain" "frontend-ui" "websocket-server" "backend-controller" "devguide-api" "aux-services-service"; do
     echo "Cloning repository: ${repo} branch: ${selectionRepo}"
     git clone -b $selectionRepo https://github.com/ramrod-project/$repo ./repos/$repo >> /dev/null
     reposave=$repo-$selectionRepo-$( date +%T-%D-%Z | sed 's/\//-/g' | sed 's/://g' )
