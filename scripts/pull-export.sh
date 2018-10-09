@@ -3,7 +3,6 @@
 # This script pulls the latest versions of the ramrodpcp docker
 # images based on the tag provided by user input. It then exports
 # them to .tar.gz files.
-# TODO:
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BASE_DIR="$( echo $SCRIPT_DIR | sed 's/[^/]*$//g' )"
