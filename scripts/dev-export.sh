@@ -96,6 +96,7 @@ imagesave_controller=image-ramrodpcp-backend-controller-$TAG-$timestamp
 echo "Saving new image to ./${imagesave_controller}.tar.gz"
 docker save ramrodpcp/backend-controller:$TAG -o $imagesave_controller.tar
 gzip $imagesave_controller.tar
+mv $imagesave_controller.tar.gz $EXPORTS_DIR
 
 # Check if the plugins directory is empty
 # (only happens in the case that there are no 'standard' plugins - all moved to 'extra')
@@ -108,6 +109,7 @@ if [[ $(find ${PLUGINS_DIR} -name "*.py" | grep -v __init__.py) ]]; then
     echo "Saving new image to ./${imagesave_interpreter}.tar.gz"
     docker save ramrodpcp/interpreter-plugin:$TAG -o $imagesave_interpreter.tar
     gzip $imagesave_interpreter.tar
+    mv $imagesave_interpreter.tar.gz $EXPORTS_DIR
 fi
 
 # Check if manifest.py created a folder for the extra plugins
@@ -121,22 +123,23 @@ if [[ -d "./extra_plugins" ]]; then
     echo "Saving new image to ./${imagesave_interpreter_extra}.tar.gz"
     docker save ramrodpcp/interpreter-plugin-extra:$TAG -o $imagesave_interpreter_extra.tar
     gzip $imagesave_interpreter_extra.tar
+    mv $imagesave_interpreter_extra.tar.gz $EXPORTS_DIR
 fi
 
 # Add controller and required files to the deployment package
-tar -cvf ramrod-deployment-package-$TAG-$timestamp.tar ${imagesave_controller}.tar.gz ./.scripts/setup.sh ./.scripts/deploy.sh ./docker/docker-compose.yml
-rm -rf ${imagesave_controller}.tar.gz
+tar -cvf ramrod-deployment-package-$TAG-$timestamp.tar ${EXPORTS_DIR}/${imagesave_controller}.tar.gz ./.scripts/setup.sh ./.scripts/deploy.sh ./docker/docker-compose.yml
+rm -rf ${EXPORTS_DIR}/${imagesave_controller}.tar.gz
 
 # If we built a new interpreter image, save it
-if [[ -f $imagesave_interpreter.tar.gz ]]; then
-    tar -rvf ramrod-deployment-package-$TAG-$timestamp.tar ${imagesave_interpreter}.tar.gz
-    rm -rf ${imagesave_interpreter}.tar.gz
+if [[ -f ${EXPORTS_DIR}/${imagesave_interpreter}.tar.gz ]]; then
+    tar -rvf ramrod-deployment-package-$TAG-$timestamp.tar ${EXPORTS_DIR}/${imagesave_interpreter}.tar.gz
+    rm -rf ${EXPORTS_DIR}/${imagesave_interpreter}.tar.gz
 fi
 
 # If we built a new interpreter 'extra' image, save it
-if [[ -f $imagesave_interpreter_extra.tar.gz ]]; then
-    tar -rvf ramrod-deployment-package-$TAG-$timestamp.tar ${imagesave_interpreter_extra}.tar.gz
-    rm -rf ${imagesave_interpreter_extra}.tar.gz
+if [[ -f ${EXPORTS_DIR}/${imagesave_interpreter_extra}.tar.gz ]]; then
+    tar -rvf ramrod-deployment-package-$TAG-$timestamp.tar ${EXPORTS_DIR}/${imagesave_interpreter_extra}.tar.gz
+    rm -rf ${EXPORTS_DIR}/${imagesave_interpreter_extra}.tar.gz
 fi
 
 # Extra images
