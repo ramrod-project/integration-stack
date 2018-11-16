@@ -16,6 +16,11 @@ if ! [[ -d $1 ]]; then
     exit 2
 fi
 
+if ((`docker ps | grep ramrod | wc -l` > 0)); then
+    echo "You must end all ramrod containers before setting up"
+    exit 3
+fi
+
 # Get branch
 TAG_NAME=$(find ./exports/ -name image-frontend* | grep -o 'dev\|qa\|latest')
 
@@ -55,4 +60,4 @@ do
     esac
 done
 
-sudo ${SCRIPT_DIR}/deploy.sh --tag ${TAG_NAME} --loglevel DEBUG
+sudo ${SCRIPT_DIR}/deploy.sh --tag ${TAG_NAME} --loglevel CRITCAL   
