@@ -5,6 +5,22 @@
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 
+PS3="Setup needs to remove PCP images, do you want to continue?"
+options=( "Yes" "No" )
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Yes")
+            break
+            ;;
+        "No")
+            echo "Exiting setup."
+            exit 1
+            ;;
+        *) echo "invalid option";;
+    esac
+done
+
 echo "Checking for existing PCP containers..."
 if [[ $# == 0 ]]; then
     echo "Please provide the export directory!"
@@ -55,11 +71,11 @@ do
             ;;
         "No")
             echo "${SCRIPT_DIR}/deploy.sh --tag ${TAG_NAME} --loglevel CRITCAL"
-            exit
+            exit 1
             ;;
         "exit")
             echo "${SCRIPT_DIR}/deploy.sh --tag ${TAG_NAME} --loglevel CRITCAL"
-            exit
+            exit 1
             ;;
         *) echo "invalid option";;
     esac
