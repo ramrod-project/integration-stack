@@ -118,10 +118,10 @@ function crtl_c() {
     echo "Tearing down stack..."
     docker stack rm pcp-test 2>&1 >>/dev/null
     echo "Removing leftover services..."
-    docker service ls | grep -v ID | awk '{print $1}' | xargs docker service rm 2>&1 1>>/dev/null
+    docker service ls | grep ramrodpcp | awk '{print $1}' | xargs docker service rm 2>&1
     echo "Removing leftover containers..."
-    docker ps | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null'
-    docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
+    docker ps | grep ramrodpcp | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker stop {} 2>&1; fi >>/dev/null'
+    docker ps -a | grep ramrodpcp | awk '{print $1}' | xargs -I {} bash -c 'if [[ {} ]]; then docker rm {} 2>&1; fi >>/dev/null'
     echo "Pruning networks..."
     docker network prune -f >> /dev/null
     echo "Restoring hosts file..."
@@ -167,7 +167,7 @@ if [[ "$TAG" == "" ]]; then
 fi
 
 if [[ "$LOGLEVEL" == "" ]]; then
-    LOGLEVEL="INFO"
+    LOGLEVEL="CRITICAL"
 fi
 
 # Avoid weird error
