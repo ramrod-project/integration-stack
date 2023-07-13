@@ -22,7 +22,7 @@ tgt_ip - browser.find_element_by_id('location_num').send_keys(192.168.1.1')
 
 tgt_port = browser.find_element_by_id('port_num')
 tgt_port.send_keys('5000')
-tgt_port.send_keys(Keys.ENTER
+tgt_port.send_keys(Keys.ENTER)
 
 tgt_name = browser.find_element_by_id('name_tag_id1')
 tgt_name.click()
